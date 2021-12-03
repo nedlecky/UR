@@ -1,0 +1,16 @@
+ Program
+   BeforeStart
+     start_p≔get_actual_tcp_pose()
+     MoveJ
+       start_p
+   Robot Program
+     MoveJ
+       Waypoint_1
+     Olis Teleop
+     current_p≔get_actual_tcp_pose()
+     MoveJ
+       current_p
+     'Wait: 1.0'
+     MoveL
+       Waypoint_2
+       Waypoint_1

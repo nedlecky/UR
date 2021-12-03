@@ -1,0 +1,17 @@
+ Program
+   BeforeStart
+     start_p≔get_actual_tcp_pose()
+     MoveJ
+       start_p
+   Robot Program
+     drop_p≔get_actual_tcp_pose()
+     Grip Check
+       If object detected          
+         Halt
+     MoveL
+       Direction: Tool Z+
+         Until (distance)
+         Until (tool_contact_detection)
+       Gripper Move25mm (1)
+       drop_p
+       Gripper Close (1)

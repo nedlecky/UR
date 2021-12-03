@@ -1,0 +1,20 @@
+ Program
+   Robot Program
+     MoveP
+       Waypoint_1
+       Waypoint_2
+       Waypoint_3
+       Waypoint_4
+       Waypoint_5
+       Waypoint_6
+       Waypoint_1
+     MoveP
+       CircleMove
+         Waypoint_2
+         Waypoint_3
+       CircleMove
+         Waypoint_4
+         Waypoint_5
+       Waypoint_6
+     MoveL
+       Waypoint_1

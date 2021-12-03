@@ -1,0 +1,14 @@
+ Program
+   BeforeStart
+     Gripper Activate
+     Gripper Close (1)
+   Robot Program
+     Zero FT Sensor
+     Call SubProgram_1
+   SubProgram_1
+     Collision Detection
+     MoveL
+       Waypoint_1
+       Waypoint_2
+       Waypoint_1
+     Collision Detection

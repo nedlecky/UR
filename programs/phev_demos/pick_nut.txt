@@ -1,0 +1,27 @@
+ Program
+   BeforeStart
+     start_p≔get_actual_tcp_pose()
+     MoveJ
+       start_p
+   Robot Program
+     pick_p≔get_actual_tcp_pose()
+     MoveL
+       Gripper Close (1)
+       Direction: Tool Z+
+         Until (tool_contact_detection)
+       Gripper Move13mm (1)
+       Direction: Tool Z+
+         Until (distance)
+         Until (tool_contact_detection)
+           Gripper Move25mm (1)
+           Direction: Tool Z+
+             Until (distance)
+           Gripper Close (1)
+           Grip Check
+             If object detected          
+               'looks like we have it on the flats'
+             Else
+               Gripper Move25mm (1)
+               Script: reorient_nut.script
+               Gripper Close (1)
+       pick_p

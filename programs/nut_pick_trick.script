@@ -1,0 +1,4 @@
+q = get_joint_positions()
+# move 1/24 of a turn... try not to grip on peaks
+q[5] = q[5] + d2r(360/24)
+movej(q)

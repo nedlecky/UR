@@ -1,0 +1,46 @@
+ Program
+   Init Variables
+   BeforeStart
+     seek_v≔seek_v
+     Gripper Activate
+   Robot Program
+     Call Pick1
+     Call Place2
+     Call Pick2
+     Call Place1
+   Pick1
+     MoveL
+       approach1
+       Gripper Close (1)
+       Direction: Tool Z+
+         Until (tool_contact_detection)
+       Gripper Move40% (1)
+       Direction: Tool Z+
+         Until (distance)
+       Gripper Close (1)
+       approach1
+   Place2
+     MoveL
+       approach2
+       Direction: Tool Z+
+         Until (tool_contact_detection)
+       Gripper Move40% (1)
+       approach2
+   Pick2
+     MoveL
+       approach2
+       Gripper Close (1)
+       Direction: Tool Z+
+         Until (tool_contact_detection)
+       Gripper Move40% (1)
+       Direction: Tool Z+
+         Until (distance)
+       Gripper Close (1)
+       approach2
+   Place1
+     MoveL
+       approach1
+       Direction: Tool Z+
+         Until (tool_contact_detection)
+       Gripper Move40% (1)
+       approach1

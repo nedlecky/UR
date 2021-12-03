@@ -1,0 +1,22 @@
+ Program
+   Robot Program
+     MoveJ
+       inspect_p
+     CGX_result:=CameraPose
+       Job Pass
+         MoveL
+           CGX_result
+         CGX_result_1:=CameraPose
+           Job Pass
+             MoveL
+               CGX_result_1
+           Job Fail
+             'ttt'
+           No Response
+             'yyy'
+       Job Fail
+         Popup: fail
+       No Response
+         Popup: no response
+     MoveL
+       inspect_p

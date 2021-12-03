@@ -1,0 +1,11 @@
+ Program
+   Robot Program
+     MoveJ
+       Waypoint_1
+     MoveL
+       Waypoint_2
+       Direction: Base Z-
+         Until (tool_contact_detection)
+       Direction: Base Z+
+         Until (distance)
+       Waypoint_1

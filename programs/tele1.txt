@@ -1,0 +1,8 @@
+ Program
+   Robot Program
+     MoveJ
+       Waypoint_1
+     MoveL
+       Waypoint_2
+       Olis Teleop
+       Waypoint_1

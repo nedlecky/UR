@@ -1,0 +1,6 @@
+ Program
+   Robot Program
+     Force
+       Wait: 5.0
+     Force
+       Wait: 5.0

@@ -1,0 +1,32 @@
+ Program
+   BeforeStart
+     Gripper Activate
+     start_p≔get_actual_tcp_pose()
+     MoveJ
+       start_p
+   Robot Program
+     MoveL
+       approach_p
+       Gripper Close (1)
+       touchoff_p
+       Direction: Tool Z+
+         Until (tool_contact_detection)
+         Until (distance)
+           MoveL
+             approach_p
+           Halt
+     Gripper Move55% (1)
+     Olis Teleop
+     MoveL
+       lift_p
+     MoveL
+       place_p
+       Direction: Tool Z+
+         Until (tool_contact_detection)
+           Gripper Move55% (1)
+           Direction: Tool Z+
+             Until (distance)
+         Until (distance)
+       place_p
+       Direction: Tool Z-
+         Until (distance)

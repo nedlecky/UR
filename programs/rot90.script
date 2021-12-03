@@ -1,0 +1,4 @@
+q = get_joint_positions()
+# move 1/4 of a turn...
+q[5] = q[5] + d2r(90)
+movej(q)

@@ -1,0 +1,3 @@
+q = get_joint_positions()
+q[5] = d2r(-350)
+movej(q)

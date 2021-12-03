@@ -1,0 +1,59 @@
+ Program
+   BeforeStart
+     Gripper Activate
+     start_p≔get_actual_tcp_pose()
+     MoveJ
+       start_p
+   Robot Program
+     MoveL
+       home_p
+     Call pick_from_table
+     Call insert
+     Call remove
+     Call return_to_table
+   remove
+     MoveL
+       start_insert
+       Gripper Move40mm (1)
+       Direction: Base Z-
+         Until (distance)
+       Gripper Close (1)
+       Direction: Base Z+
+         Until (distance)
+       travel_insert
+   insert
+     MoveL
+       travel_insert
+       start_insert
+     Insertion
+       Zero FT Sensor
+       Spiral
+         On error
+           'Sequence if maximum radius is reached'
+           Halt
+       Force
+         Wait: 3.0
+       Gripper Move40mm (1)
+       MoveL
+         Direction: Base Z+
+           Until (distance)
+   pick_from_table
+     MoveL
+       pick_start
+       Gripper Close (1)
+       Direction: Tool Z+
+         Until (tool_contact_detection)
+       Gripper Move46mm (1)
+       Direction: Tool Z+
+         Until (distance)
+       Gripper Close (1)
+       Direction: Base Z+
+         Until (distance)
+   return_to_table
+     MoveL
+       pick_start
+       Direction: Tool Z+
+         Until (tool_contact_detection)
+       Gripper Move46mm (1)
+       Direction: Base Z+
+         Until (distance)

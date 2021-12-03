@@ -1,0 +1,12 @@
+ Program
+   Robot Program
+     Insertion
+       Zero FT Sensor
+       Linear
+         On error
+           'Sequence if maximum distance is reached'
+           Halt
+       Gripper Move17mm (1)
+       MoveL
+         Direction: Tool Z-
+           Until (distance)

@@ -1,0 +1,28 @@
+ Program
+   BeforeStart
+     Gripper Activate
+     initial_p≔get_actual_tcp_pose()
+     MoveJ
+       initial_p
+     Set LaserOFF=Off
+   Robot Program
+     Grip Check
+       If object detected          
+         Popup: Object in gripper. Safe to open?
+         Gripper Open (1)
+     MoveL
+       Direction: Tool Z-
+         Until (distance)
+     Gripper Close (1)
+     MoveL
+       measure_storage
+     iac7_dist≔0
+     Call read_distance
+     iac7_base_dist≔iac7_dist
+     Loop
+       Call read_distance
+       iac7_delta_z≔iac7_dist - iac7_base_dist
+       If norm(iac7_delta_z) > 0.002
+         Script: IAC007 Move Script.script
+   read_distance
+     Script: IAC7 Laser Script.script

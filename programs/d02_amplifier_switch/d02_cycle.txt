@@ -1,0 +1,63 @@
+ Program
+   BeforeStart
+     Gripper Activate
+   Robot Program
+     Call d02_home
+     Call d02_amp_off
+     Call d02_unplug
+     Call d02_replug
+     Call d02_amp_on
+     Call d02_home
+   d02_home
+     Gripper Activate
+     Gripper Move17mm (1)
+     Gripper Close (1)
+     MoveJ
+       d02_home_p
+   d02_amp_off
+     Gripper Close (1)
+     MoveL
+       d02_amp_sw_p
+       Zero FT Sensor
+       Force Control
+         Wait: 2.0
+       d02_amp_sw_p
+   d02_amp_on
+     Gripper Close (1)
+     MoveL
+       d02_amp_sw_p
+       Direction: Tool Z+
+         Until (tool_contact_detection)
+       Gripper Move12mm (1)
+       Direction: Tool Z+
+         Until (distance)
+       Gripper Close (1)
+       Force Control
+         Wait: 2.0
+         Gripper Move12mm (1)
+       d02_amp_sw_p
+   d02_unplug
+     MoveL
+       d02_plug_p
+       Gripper Close (1)
+       Direction: Tool Z+
+         Until (tool_contact_detection)
+           Gripper Move17mm (1)
+           Direction: Tool Z+
+             Until (distance)
+           Gripper Close (1)
+           MoveL
+             Pull
+         Until (distance)
+           d02_plug_p
+   d02_replug
+     Insertion
+       Zero FT Sensor
+       Linear
+         On error
+           'Sequence if maximum distance is reached'
+           Halt
+       Gripper Move17mm (1)
+       MoveL
+         Direction: Tool Z-
+           Until (distance)

@@ -1,0 +1,10 @@
+ Program
+   Robot Program
+     CGX_result:=CameraPose
+       Job Pass
+         MoveL
+           CGX_result
+       Job Fail
+         <empty>
+       No Response
+         <empty>

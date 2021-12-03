@@ -1,0 +1,6 @@
+ Program
+   Robot Program
+     Call ShowGripper
+   ShowGripper
+     MoveJ
+       Waypoint_1

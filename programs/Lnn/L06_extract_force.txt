@@ -1,0 +1,72 @@
+ Program
+   BeforeStart
+     Gripper Activate
+     Gripper Move20mm (1)
+     start_p≔get_actual_tcp_pose()
+     MoveJ
+       start_p
+     MoveL
+       Direction: Base Z+
+         Until (distance)
+     Gripper Close (1)
+   Robot Program
+     MoveJ
+       align_approach
+     MoveL
+       misalign
+       'Touch plug'
+       Gripper Close (1)
+       Direction: Tool Z+
+         Until (distance)
+           MoveL
+             align_approach
+             Halt
+         Until (tool_contact_detection)
+       Call extract
+       extract_p≔get_actual_tcp_pose()
+       Direction: Base Y+
+         Until (distance)
+       MoveJ
+         display_p
+         Wait: 2.0
+         extract_p
+       'Deliberately misalign'
+       Direction: Tool Z+
+         Until (distance)
+       Direction: Tool X+
+         Until (distance)
+       Call insert
+   insert
+     Insertion
+       Zero FT Sensor
+       Force Control
+         Wait: 6.0
+       'Linear'
+     Gripper Move20mm (1)
+     MoveL
+       align_approach
+   extract
+     MoveL
+       Gripper Move20mm (1)
+       Direction: Base Z-
+         Until (distance)
+       Zero FT Sensor
+       Gripper Close (1)
+       Grip Check
+         If object detected          
+           'plug grabbed'
+         Else
+           'no plug'
+           MoveJ
+             align_approach
+             Halt
+       'Let gripper seek alignment'
+       Force Control
+         Wait: 3.0
+       'Extract'
+       Insertion
+         Zero FT Sensor
+         Linear
+           On error
+             'Sequence if maximum distance is reached'
+       'Force Control'

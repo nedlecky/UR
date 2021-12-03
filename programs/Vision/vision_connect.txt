@@ -1,0 +1,7 @@
+ Program
+   Robot Program
+     v_connected≔ False 
+     Loop v_connected≟ False 
+       v_connected≔socket_open("192.168.0.251",3000,"socket0")
+       Wait: 0.2
+       TargetObject = [0,0,0,0,0,0]

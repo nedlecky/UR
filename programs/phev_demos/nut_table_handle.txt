@@ -1,0 +1,56 @@
+ Program
+   BeforeStart
+     start_p≔get_actual_tcp_pose()
+     MoveJ
+       start_p
+   Robot Program
+     Call safe_home
+     Loop
+       MoveL
+         i01_Table01
+         Call pick_nut
+         Call drop_nut
+   drop_nut
+     drop_p≔get_actual_tcp_pose()
+     Grip Check
+       If object not detected          
+         Halt
+     MoveL
+       Direction: Tool Z+
+         Until (distance)
+         Until (tool_contact_detection)
+       Gripper Move25mm (1)
+       drop_p
+       Gripper Close (1)
+   pick_nut
+     pick_p≔get_actual_tcp_pose()
+     MoveL
+       Gripper Close (1)
+       Direction: Tool Z+
+         Until (tool_contact_detection)
+       Gripper Move13mm (1)
+       Direction: Tool Z+
+         Until (distance)
+         Until (tool_contact_detection)
+           Gripper Move25mm (1)
+           Direction: Tool Z+
+             Until (distance)
+           Gripper Close (1)
+           Grip Check
+             If grip validated          
+               'looks like we have it on the flats'
+             Else
+               Gripper Move25mm (1)
+               Script: reorient_nut.script
+               Gripper Close (1)
+       pick_p
+   safe_home
+     Gripper Activate
+     MoveL
+       Gripper Move25mm (1)
+       Direction: Tool Z-
+         Until (tool_contact_detection)
+           Popup: Unexpected contact
+         Until (distance)
+       Gripper Close (1)
+       i01_Home

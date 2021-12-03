@@ -1,0 +1,21 @@
+ Program
+   BeforeStart
+     Gripper Activate
+     Gripper Close (1)
+     MoveJ
+       init_p
+   Robot Program
+     MoveJ
+       final_p
+       init_p
+     MoveL
+       final_p
+       init_p
+     Loop 3 times
+       MoveP
+         Waypoint_2
+         Waypoint_3
+         Waypoint_4
+         init_p
+     MoveL
+       init_p

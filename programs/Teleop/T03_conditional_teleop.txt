@@ -1,0 +1,21 @@
+ Program
+   BeforeStart
+     Gripper Activate
+     start_p≔get_actual_tcp_pose()
+     MoveJ
+       start_p
+   Robot Program
+     MoveL
+       approach_p
+       Gripper Move55% (1)
+       grasp_p
+       Gripper Close (1)
+       Grip Check
+         If object detected          
+           Gripper Move55% (1)
+           MoveL
+             approach_p
+         Else
+           Olis Teleop
+           MoveL
+             approach_p

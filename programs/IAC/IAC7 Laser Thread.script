@@ -1,0 +1,22 @@
+global iac7_n_readings = 10
+i = 0
+sum = 0
+global iac7_rmax = 0
+globl iac7_rmin = 10
+while i < iac7_n_readings:
+  r = get_standard_analog_in(0)
+  if r < iac7_rmin:
+    iac7_rmin = r
+  else:
+    if r > iac7_rmax:
+      iac7_rmax = r
+    end
+  end
+  sum = sum + r
+  sleep(0.001)
+  i = i + 1
+end
+
+global iac7_unused = iac7_rmin + iac7_rmax
+global iac7_reading = sum / (iac7_n_readings) * 187.5 - 0.700
+global iac7_dist = 0.1 * iac7_reading + 0.9 * iac7_dist

@@ -1,0 +1,24 @@
+ Program
+   BeforeStart
+     Safe Home Folder
+       'Read robot current position'
+       start_pose≔get_actual_tcp_pose()
+       MoveL
+         'First pose is current pose'
+         'Variable position'
+         start_pose
+       'Break start pose into directions'
+       start_x≔start_pose[0]
+       start_y≔start_pose[1]
+       start_z≔start_pose[2]
+       'If TCP is inside box'
+       If (start_x≥0.2) and (start_y≥0.1)
+         'Move to safe pos. 50 mm above box edge'
+         Safe_Z_value≔0.350
+         'Same as start pose, but with altered Z-value'
+         Safe_Pose≔p[start_pose[0],start_pose[1],Safe_Z_value,start_pose[3],start_pose[4],start_pose[5]]
+         MoveL
+           Safe_Pose
+   Robot Program
+     MoveJ
+       Normal_start

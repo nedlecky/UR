@@ -1,0 +1,22 @@
+ Program
+   BeforeStart
+     start_p≔get_actual_tcp_pose()
+     MoveL
+       start_p
+   Robot Program
+     MoveL
+       approach_p
+       Gripper Close (1)
+       Direction: Tool Z+
+         Until (tool_contact_detection)
+       Gripper Move40% (1)
+       Direction: Tool Z+
+         Until (distance)
+       Zero FT Sensor
+       Gripper Close (1)
+       Wait: 2.0
+       Force Control
+         Wait: 3.0
+       Gripper Move40% (1)
+       Direction: Tool Z-
+         Until (distance)

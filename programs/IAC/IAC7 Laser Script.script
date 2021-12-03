@@ -1,0 +1,11 @@
+global iac7_n_readings = 50
+i = 0
+sum = 0
+while i < iac7_n_readings:
+  sum = sum + get_standard_analog_in(0)
+  sleep(0.001)
+  i = i + 1
+end
+
+global iac7_reading = sum / iac7_n_readings * 187.5 - 0.700 * sin(d2r(72))
+global iac7_dist = iac7_reading

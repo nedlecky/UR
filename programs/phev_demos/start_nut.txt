@@ -1,0 +1,27 @@
+ Program
+   Robot Program
+     Grip Check
+       If object detected          
+         Halt
+     Script: max_ccw_wrist.script
+     start_nut_p≔get_actual_tcp_pose()
+     MoveL
+       Direction: Tool Z+
+         Until (tool_contact_detection)
+     Force
+       Wait: 5.0
+     Gripper Move25mm (1)
+     Script: max_ccw_wrist.script
+     MoveL
+       Direction: Tool Z+
+         Until (distance)
+     Gripper Close (1)
+     Grip Check
+       If object detected          
+         Force
+           Wait: 5.0
+     Gripper Move25mm (1)
+     MoveL
+       start_nut_p
+       i01_SafeHover
+     Script: max_ccw_wrist.script

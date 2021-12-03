@@ -1,0 +1,15 @@
+ Program
+   BeforeStart
+     start_p≔get_actual_tcp_pose()
+     MoveJ
+       start_p
+   Robot Program
+     Gripper Activate
+     MoveL
+       Gripper Move25mm (1)
+       Direction: Tool Z-
+         Until (tool_contact_detection)
+           Popup: Unexpected contact
+         Until (distance)
+       Gripper Close (1)
+       i01_Home

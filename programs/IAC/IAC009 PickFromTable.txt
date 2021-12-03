@@ -1,0 +1,134 @@
+ Program
+   BeforeStart
+     Gripper Activate
+     initial_p≔get_actual_tcp_pose()
+     MoveJ
+       initial_p
+   Robot Program
+     Gripper Close (1)
+     MoveL
+       home
+     Call vision_connect
+     'Perform intrinsic calibration'
+     MoveL
+       ical_p_straight
+       Call vis_start_intrinsic_cal
+       Call vis_add_intrinsic_cal
+       ical_p_leanback
+       Call vis_add_intrinsic_cal
+       ical_p_leanfwd
+       Call vis_add_intrinsic_cal
+       ical_p_leanleft
+       Call vis_add_intrinsic_cal
+       ical_p_leanrgt
+       Call vis_add_intrinsic_cal
+       ical_p_rotcw
+       Call vis_add_intrinsic_cal
+       ical_p_rotccw
+       Call vis_add_intrinsic_cal
+       Call vis_finish_intrinsic_cal
+     'Perform extrinsic calibration'
+     MoveL
+       extrinsic_cal
+       Call vis_extrinsic_cal
+     Call vis_load_pattern
+     'Loop finding nut, pick, and replace in slightly random position until not DIN[1]'
+     Loop digital_in[1]
+       MoveL
+         find_nut_p
+         Call vis_find_pattern
+         If norm(VFoundDx)≠999
+           Script: IAC009 Adjust Position Script.script
+           Call vis_find_pattern
+           MoveL
+             VisToPickOffset
+             Call pick
+             fun_p
+             return_to_table
+             Script: IAC009 Place Random Script.script
+             Call place
+     MoveL
+       home
+     Call vision_disconnect
+   pick
+     MoveL
+       Gripper Move27mm (1)
+       Direction: Tool Z+
+         Until (tool_contact_detection)
+       Gripper Close (1)
+       Direction: Base Z+
+         Until (distance)
+   place
+     MoveL
+       Direction: Tool Z+
+         Until (tool_contact_detection)
+       Gripper Move30mm (1)
+       Direction: Base Z+
+         Until (distance)
+   vision_connect
+     v_connected≔ False 
+     Loop v_connected≟ False 
+       v_connected≔socket_open("192.168.0.251",3000,"socket0")
+       Wait: 0.2
+       TargetObject = [0,0,0]
+   vision_disconnect
+     v_connected≔ False 
+     socket_close("socket0")
+   vision_acquire_only
+     socket_send_line("0","socket0")
+     TargetObject≔[0,0,0]
+     Loop TargetObject[0]≟0
+       TargetObject≔socket_read_ascii_float(2,"socket0")
+       Wait: 0.1
+     Vcommand_idx≔TargetObject[1]
+     VFoundDy≔TargetObject[2]
+   vis_start_intrinsic_cal
+     socket_send_line("10","socket0")
+     TargetObject≔[0,0,0]
+     Loop TargetObject[0]≟0
+       TargetObject≔socket_read_ascii_float(2,"socket0")
+       Wait: 0.1
+     Vcommand_idx≔TargetObject[1]
+     VFoundDy≔TargetObject[2]
+   vis_add_intrinsic_cal
+     socket_send_line("11","socket0")
+     TargetObject≔[0,0,0]
+     Loop TargetObject[0]≟0
+       TargetObject≔socket_read_ascii_float(2,"socket0")
+       Wait: 0.1
+     Vcommand_idx≔TargetObject[1]
+     VFoundDy≔TargetObject[2]
+   vis_finish_intrinsic_cal
+     socket_send_line("12","socket0")
+     TargetObject≔[0,0,0]
+     Loop TargetObject[0]≟0
+       TargetObject≔socket_read_ascii_float(2,"socket0")
+       Wait: 0.1
+     Vcommand_idx≔TargetObject[1]
+     VFoundDy≔TargetObject[2]
+   vis_extrinsic_cal
+     socket_send_line("15","socket0")
+     TargetObject≔[0,0,0]
+     Loop TargetObject[0]≟0
+       TargetObject≔socket_read_ascii_float(2,"socket0")
+       Wait: 0.1
+     Vcommand_idx≔TargetObject[1]
+     VFoundDy≔TargetObject[2]
+   vis_load_pattern
+     socket_send_line("20","socket0")
+     TargetObject≔[0,0,0]
+     Loop TargetObject[0]≟0
+       TargetObject≔socket_read_ascii_float(2,"socket0")
+       Wait: 0.1
+     Vcommand_idx≔TargetObject[1]
+     VFoundDy≔TargetObject[2]
+   vis_find_pattern
+     socket_send_line("21","socket0")
+     TargetFindObj≔[0,0,0,0,0]
+     Loop TargetFindObj[0]≟0
+       TargetFindObj≔socket_read_ascii_float(4,"socket0")
+       Wait: 0.1
+     Vcommand_idx≔TargetFindObj[1]
+     VFoundDx≔TargetFindObj[2]
+     VFoundDy≔TargetFindObj[3]
+     VFoundAngle≔TargetFindObj[4]

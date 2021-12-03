@@ -1,0 +1,10 @@
+ Program
+   BeforeStart
+     Gripper Activate
+     initial_p≔get_actual_tcp_pose()
+   Robot Program
+     Gripper Close (1)
+     MoveJ
+       initial_p
+     Force
+       <empty>

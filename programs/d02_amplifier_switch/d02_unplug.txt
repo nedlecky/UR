@@ -1,0 +1,15 @@
+ Program
+   Robot Program
+     MoveL
+       d02_plug_p
+       Gripper Close (1)
+       Direction: Tool Z+
+         Until (tool_contact_detection)
+           Gripper Move17mm (1)
+           Direction: Tool Z+
+             Until (distance)
+           Gripper Close (1)
+           MoveL
+             Pull
+         Until (distance)
+           d02_plug_p

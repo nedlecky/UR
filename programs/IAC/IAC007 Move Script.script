@@ -1,0 +1,4 @@
+global iac7_cur_p = get_actual_tcp_pose()
+global iac7_new_p = iac7_cur_p
+iac7_new_p[2] = iac7_new_p[2] - iac7_delta_z
+movel(iac7_new_p, a=0.5)

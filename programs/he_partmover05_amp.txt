@@ -1,0 +1,58 @@
+ Program
+   Init Variables
+   BeforeStart
+     Gripper Activate
+     Gripper Move25mm (1)
+     Call ClearObstacle
+   Robot Program
+     Call Pick1
+     Grip Check
+       If object detected          
+         Call ClearObstacle
+         Call Place2
+     Call Pick2
+     Grip Check
+       If object detected          
+         Call ClearObstacle
+         Call Place1
+   ClearObstacle
+     MoveL
+       Clear
+   Pick1
+     MoveL
+       approach1
+       Gripper Close (1)
+       Direction: Tool Z+
+         Until (tool_contact_detection)
+           Gripper Move25mm (1)
+           Direction: Tool Z+
+             Until (distance)
+           Gripper Close (1)
+         Until (distance)
+       approach1
+   Place2
+     MoveL
+       approach2
+       Direction: Tool Z+
+         Until (tool_contact_detection)
+       Gripper Move25mm (1)
+       approach2
+   Pick2
+     MoveL
+       approach2
+       Gripper Close (1)
+       Direction: Tool Z+
+         Until (tool_contact_detection)
+           Gripper Move25mm (1)
+           Direction: Tool Z+
+             Until (distance)
+           Gripper Close (1)
+         Until (distance)
+       approach2
+   Place1
+     MoveL
+       approach1
+       Direction: Tool Z+
+         Until (tool_contact_detection)
+       Gripper Move25mm (1)
+       approach1

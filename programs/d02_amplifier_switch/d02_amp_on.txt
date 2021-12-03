@@ -1,0 +1,15 @@
+ Program
+   Robot Program
+     Gripper Close (1)
+     MoveL
+       d02_amp_sw_p
+       Direction: Tool Z+
+         Until (tool_contact_detection)
+       Gripper Move12mm (1)
+       Direction: Tool Z+
+         Until (distance)
+       Gripper Close (1)
+       Force Control
+         Wait: 2.0
+         Gripper Move12mm (1)
+       d02_amp_sw_p

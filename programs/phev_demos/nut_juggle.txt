@@ -1,0 +1,67 @@
+ Program
+   BeforeStart
+     start_p≔get_actual_tcp_pose()
+     MoveJ
+       start_p
+     Call safe_home
+     l2r_f≔ True 
+   Robot Program
+     If l2r_f≟ True 
+       MoveL
+         i01_NutStackL
+       Call pick_nut
+       Grip Check
+         If object detected          
+           MoveL
+             i01_NutStackR
+           Call drop_nut
+         Else
+           l2r_f≔ False 
+     Else
+       MoveL
+         i01_NutStackR
+       Call pick_nut
+       Grip Check
+         If object detected          
+           MoveL
+             i01_NutStackL
+           Call drop_nut
+         Else
+           l2r_f≔ True 
+   drop_nut
+     drop_p≔get_actual_tcp_pose()
+     Grip Check
+       If object not detected          
+         Halt
+     MoveL
+       Direction: Tool Z+
+         Until (distance)
+         Until (tool_contact_detection)
+       Gripper Move25mm (1)
+       drop_p
+       Gripper Close (1)
+   safe_home
+     Gripper Activate
+     MoveL
+       Gripper Move25mm (1)
+       Direction: Tool Z-
+         Until (tool_contact_detection)
+           Popup: Unexpected contact
+         Until (distance)
+       Gripper Close (1)
+       i01_Home
+   pick_nut
+     pick_p≔get_actual_tcp_pose()
+     MoveL
+       Gripper Close (1)
+       Direction: Tool Z+
+         Until (tool_contact_detection)
+       Gripper Move13mm (1)
+       Direction: Tool Z+
+         Until (distance)
+         Until (tool_contact_detection)
+           Gripper Move25mm (1)
+           Direction: Tool Z+
+             Until (distance)
+           Gripper Close (1)
+       pick_p

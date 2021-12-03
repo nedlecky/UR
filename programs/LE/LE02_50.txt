@@ -1,0 +1,15 @@
+ Program
+   BeforeStart
+     Gripper Activate
+     start_pose≔get_actual_tcp_pose()
+     MoveJ
+       start_pose
+   Robot Program
+     MoveL
+       Vertical
+       Tilted_1
+       Set Relay120VAC=On
+       Wait: 1.0
+       Set Relay120VAC=Off
+       Vertical
+       response≔"50 success"

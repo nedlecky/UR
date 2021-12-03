@@ -1,0 +1,17 @@
+ Program
+   Robot Program
+     p01_p≔get_actual_tcp_pose()
+     MoveL
+       p01_p
+       Direction: Base X+
+         Until (distance)
+           p02_p≔get_actual_tcp_pose()
+       p01_p
+       Direction: Base Y+
+         Until (distance)
+           p03_p≔get_actual_tcp_pose()
+       p01_p
+       Direction: Base Z+
+         Until (distance)
+           p04_p≔get_actual_tcp_pose()
+       p01_p

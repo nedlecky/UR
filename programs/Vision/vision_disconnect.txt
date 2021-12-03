@@ -1,0 +1,4 @@
+ Program
+   Robot Program
+     v_connected≔ False 
+     socket_close("socket0")

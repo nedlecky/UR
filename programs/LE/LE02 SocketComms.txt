@@ -1,0 +1,49 @@
+ Program
+   BeforeStart
+     Gripper Activate
+     socket_close()
+     Wait: 0.25
+     socket_is_open≔ False 
+     command_index≔0
+   Robot Program
+     command_index≔command_index+1
+     Loop socket_is_open ≟  False 
+       socket_is_open≔socket_open("192.168.0.252", 30000)
+       Wait: 0.5
+     command≔socket_read_ascii_float(5)
+     response≔"Unknown command"
+     If command[0]≟5
+       Switch command[1]
+         Case 1
+           MoveL
+             up_pose
+           response≔"moved up"
+         Case 2
+           MoveJ
+             start_pose
+           response≔"moved down"
+         Case 3
+           Gripper Close (1)
+           response≔"close"
+         Case 4
+           Gripper Open (1)
+           response≔"open"
+         Case 50
+           Call LE02_50
+         Case 99
+           response≔"exiting"
+         Default Case
+           response≔"unknown command"
+       socket_send_line(response)
+       If command[1]≟99
+         socket_close()
+         Halt
+   LE02_50
+     MoveL
+       Vertical
+       Tilted_1
+       Set Relay120VAC=On
+       Wait: 1.0
+       Set Relay120VAC=Off
+       Vertical
+       response≔"50 success"

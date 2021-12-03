@@ -1,0 +1,115 @@
+ Program
+   BeforeStart
+     start_p≔get_actual_tcp_pose()
+     MoveJ
+       start_p
+     Call safe_home
+   Robot Program
+     MoveL
+       i01_NutStackR
+       Call pick_nut
+       Grip Check
+         If object detected          
+           MoveL
+             Direction: Base Z+
+               Until (distance)
+             i01_BoltNE
+           Call start_nut
+       i01_NutStackR
+       Call pick_nut
+       Grip Check
+         If object detected          
+           MoveL
+             Direction: Base Z+
+               Until (distance)
+             i01_BoltSE
+           Call start_nut
+       i01_NutStackL
+       Call pick_nut
+       Grip Check
+         If object detected          
+           MoveL
+             Direction: Base Z+
+               Until (distance)
+             i01_BoltNW
+           Call start_nut
+       i01_NutStackL
+       Call pick_nut
+       Grip Check
+         If object detected          
+           MoveL
+             Direction: Base Z+
+               Until (distance)
+             i01_BoltSW
+           Call start_nut
+       Call safe_home
+   safe_home
+     Gripper Activate
+     MoveL
+       Gripper Move25mm (1)
+       Direction: Tool Z-
+         Until (tool_contact_detection)
+           Popup: Unexpected contact
+         Until (distance)
+       Gripper Close (1)
+       i01_Home
+   start_nut
+     Grip Check
+       If object not detected          
+         Halt
+     Script: max_ccw_wrist.script
+     start_nut_p≔get_actual_tcp_pose()
+     MoveL
+       Direction: Tool Z+
+         Until (tool_contact_detection)
+     Force
+       Wait: 5.0
+     Gripper Move25mm (1)
+     Script: max_ccw_wrist.script
+     MoveL
+       Direction: Tool Z+
+         Until (distance)
+     Gripper Close (1)
+     Grip Check
+       If grip validated          
+         Force
+           Wait: 5.0
+     Gripper Move25mm (1)
+     MoveL
+       start_nut_p
+       i01_SafeHover
+     Script: max_ccw_wrist.script
+   drop_nut
+     drop_p≔get_actual_tcp_pose()
+     Grip Check
+       If object not detected          
+         Halt
+     MoveL
+       Direction: Tool Z+
+         Until (distance)
+         Until (tool_contact_detection)
+       Gripper Move25mm (1)
+       drop_p
+       Gripper Close (1)
+   pick_nut
+     pick_p≔get_actual_tcp_pose()
+     MoveL
+       Gripper Close (1)
+       Direction: Tool Z+
+         Until (tool_contact_detection)
+       Gripper Move13mm (1)
+       Direction: Tool Z+
+         Until (distance)
+         Until (tool_contact_detection)
+           Gripper Move25mm (1)
+           Direction: Tool Z+
+             Until (distance)
+           Gripper Close (1)
+           Grip Check
+             If grip validated          
+               'looks like we have it on the flats'
+             Else
+               Gripper Move25mm (1)
+               Script: reorient_nut.script
+               Gripper Close (1)
+       pick_p

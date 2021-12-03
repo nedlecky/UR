@@ -1,0 +1,11 @@
+ Program
+   Robot Program
+     Gripper Activate
+     Gripper Close (1)
+     MoveJ
+       Waypoint_1
+     MoveL
+       Waypoint_2
+     Olis Teleop
+     MoveL
+       Waypoint_1

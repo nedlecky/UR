@@ -1,0 +1,32 @@
+ Program
+   BeforeStart
+     init_p≔get_actual_tcp_pose()
+     MoveL
+       init_p
+     If init_p[2]<0.100
+       safe_p≔p[init_p[0],init_p[1],0.100,init_p[3],init_p[4],init_p[5]]
+       MoveL
+         safe_p
+   Robot Program
+     MoveJ
+       start_p
+       Gripper Close (1)
+     MoveL
+       left_corner
+       Direction: Base Z-
+         Until (tool_contact_detection)
+           left_z≔get_actual_tcp_pose()
+       Direction: Base Z+
+         Until (distance)
+       right_corner
+       Direction: Base Z-
+         Until (tool_contact_detection)
+           right_z≔get_actual_tcp_pose()
+       Direction: Base Z+
+         Until (distance)
+       switch
+       Direction: Base Z-
+         Until (tool_contact_detection)
+           switch_z≔get_actual_tcp_pose()
+       Direction: Base Z+
+         Until (distance)

@@ -1,0 +1,47 @@
+ Program
+   BeforeStart
+     Gripper Activate
+   Robot Program
+     Gripper Move20mm (1)
+     start_p≔get_actual_tcp_pose()
+     MoveJ
+       start_p
+     MoveL
+       Direction: Tool Z-
+         Until (distance)
+       home
+     MoveL
+       near_pen
+       Gripper Move20mm (1)
+       Direction: Base Y-
+         Until (distance)
+       Gripper Close (1)
+       Direction: Base Z+
+         Until (distance)
+       pen_picked≔get_actual_tcp_pose()
+     MoveL
+       draw_start
+       Direction: Base Z-
+         Until (tool_contact_detection)
+       Force
+         Wait: 5.0
+     Force
+       MoveL
+         Direction: Base X-
+           Until (distance)
+         Direction: Base Y+
+           Until (distance)
+         Direction: Base X+
+           Until (distance)
+         Direction: Base Y-
+           Until (distance)
+     MoveL
+       Direction: Base Z+
+         Until (distance)
+       pen_picked
+       Direction: Base Z-
+         Until (tool_contact_detection)
+       Gripper Move20mm (1)
+       Direction: Base Y+
+         Until (distance)
+       home

@@ -1,0 +1,60 @@
+ Program
+   BeforeStart
+     Gripper Activate
+     start_p≔get_actual_tcp_pose()
+     MoveJ
+       start_p
+   Robot Program
+     MoveJ
+       vertical_p
+       Gripper Close (1)
+     MoveL
+       pick_table
+       Direction: Tool Z+
+         Until (tool_contact_detection)
+           Gripper Move50% (1)
+           Direction: Tool Z+
+             Until (distance)
+           Gripper Close (1)
+           MoveL
+             pick_table
+         Until (distance)
+           Popup: part missing
+           MoveL
+             vertical_p
+     MoveL
+       clear_p
+     MoveJ
+       horizontal_p
+     MoveL
+       place_trans
+       Direction: Base Z-
+         Until (tool_contact_detection)
+           Gripper Move50% (1)
+       place_trans
+       clear_2
+     MoveL
+       Gripper Close (1)
+       pick_2
+       Direction: Base Z-
+         Until (distance)
+           Popup: part_missing
+           MoveL
+             pick_2
+         Until (tool_contact_detection)
+           Gripper Move50% (1)
+           Direction: Base Z-
+             Until (distance)
+           Gripper Close (1)
+       pick_2
+       clear_2
+     MoveJ
+       vertical_p
+     MoveL
+       pick_table
+       Direction: Base Z-
+         Until (tool_contact_detection)
+           Gripper Move50% (1)
+           pick_table
+           clear_p
+           vertical_p

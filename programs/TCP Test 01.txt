@@ -1,0 +1,17 @@
+ Program
+   BeforeStart
+     Gripper Activate
+     Gripper Close (1)
+   Robot Program
+     '2F85 Tool vertical above box'
+     MoveJ
+       hover
+       on_target
+     MoveJ
+       on_target
+     MoveJ
+       on_target
+     MoveJ
+       on_target
+     MoveJ
+       hover

@@ -1,0 +1,49 @@
+ Program
+   BeforeStart
+     Gripper Activate
+     initial_p≔get_actual_tcp_pose()
+     MoveJ
+       initial_p
+     Set LaserOFF=On
+   Robot Program
+     Gripper Close (1)
+     MoveL
+       home
+     Call vision_connect
+     Loop 5 times
+       MoveL
+         read_1
+         Call vision_read_barcode
+       MoveL
+         read_2
+         Call vision_read_barcode
+       MoveL
+         read_3
+         Call vision_read_barcode
+       MoveL
+         read_4
+         Call vision_read_barcode
+       MoveL
+         read_5
+         Call vision_read_barcode
+     MoveL
+       home
+     Call vision_disconnect
+   vision_connect
+     v_connected≔ False 
+     Loop v_connected≟ False 
+       v_connected≔socket_open("192.168.0.251",3000,"socket0")
+       Wait: 0.2
+       TargetObject = [0,0,0]
+   vision_disconnect
+     v_connected≔ False 
+     socket_close("socket0")
+   vision_read_barcode
+     socket_send_line("5","socket0")
+     TargetObject≔[0,0,0]
+     Loop TargetObject[0]≟0
+       TargetObject≔socket_read_ascii_float(2,"socket0")
+       Wait: 0.1
+     Vcommand_idx≔TargetObject[1]
+     barcode_count≔TargetObject[2]
+     barcode_strings≔socket_read_string("socket0")

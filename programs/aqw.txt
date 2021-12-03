@@ -1,0 +1,25 @@
+ Program
+   BeforeStart
+     Gripper Activate
+   Robot Program
+     Grip Check
+       If object detected          
+         Popup: Already holding something!
+         Halt
+     MoveJ
+       Waypoint_1
+       Gripper Move0mm (1)
+       MoveL
+         nut_pickup
+         Direction: Tool Z+
+           Until (distance)
+             Popup
+           Until (tool_contact_detection)
+         Gripper Move25mm (1)
+         Direction: Tool Z+
+           Until (tool_contact_detection)
+         Gripper Close (1)
+         Direction: Base Z+
+           Until (distance)
+       MoveL
+         Waypoint_1

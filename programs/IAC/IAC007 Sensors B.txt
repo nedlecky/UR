@@ -1,0 +1,51 @@
+ Program
+   BeforeStart
+     Gripper Activate
+     initial_p≔get_actual_tcp_pose()
+     MoveJ
+       initial_p
+   Robot Program
+     Grip Check
+       If object detected          
+         Popup: Object in gripper. Safe to open?
+         Gripper Open (1)
+     MoveL
+       Direction: Tool Z-
+         Until (distance)
+     Gripper Close (1)
+     MoveL
+       home
+     Loop
+       Grip Check
+         If object not detected          
+           If  not digital_in[0]
+             MoveL
+               Pick_start_0
+               Call pick
+               Call place_at_storage
+           If  not digital_in[1]
+             MoveL
+               pick_start_1
+               Call pick
+               Call place_at_storage
+   pick
+     Gripper Close (1)
+     MoveL
+       Direction: Tool Z+
+         Until (tool_contact_detection)
+           Gripper Open (1)
+           Direction: Tool Z+
+             Until (tool_contact_detection)
+           Gripper Close (1)
+           Direction: Base Z+
+             Until (distance)
+         Until (distance)
+           Popup: object not found
+   place_at_storage
+     MoveL
+       storage
+       Direction: Tool Z+
+         Until (tool_contact_detection)
+       Gripper Open (1)
+       Direction: Base Z+
+         Until (distance)

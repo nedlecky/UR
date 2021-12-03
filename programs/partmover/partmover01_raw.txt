@@ -1,0 +1,25 @@
+ Program
+   BeforeStart
+     Gripper Activate
+     Gripper Move40% (1)
+   Robot Program
+     MoveL
+       approach1
+       pick1
+       Gripper Close (1)
+       approach1
+     MoveL
+       approach2
+       drop2
+       Gripper Move40% (1)
+       approach2
+     MoveL
+       approach2
+       pick2
+       Gripper Close (1)
+       approach2
+     MoveL
+       approach1
+       drop1
+       Gripper Move40% (1)
+       approach1

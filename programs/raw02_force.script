@@ -1,0 +1,54 @@
+def unnamed():
+  set_tool_communication(True, 115200, 0, 1, 1.5, 3.5)
+  set_tool_output_mode(0)
+  set_tool_digital_output_mode(0, 1)
+  set_tool_digital_output_mode(1, 1)
+  set_tool_voltage(24)
+  set_standard_analog_input_domain(0, 1)
+  set_standard_analog_input_domain(1, 1)
+  set_tool_analog_input_domain(0, 1)
+  set_tool_analog_input_domain(1, 1)
+  set_analog_outputdomain(0, 0)
+  set_analog_outputdomain(1, 0)
+  set_input_actions_to_default()
+  set_safety_mode_transition_hardness(1)
+  set_gravity([0.0, 0.0, 9.82])
+  set_tcp(p[0.0,0.0,0.158,0.0,0.0,0.0])
+  set_payload(1.1, [0.0, 0.0, 0.05])
+  step_count_ee365b31_dd5a_4805_94e4_61c0a16f6ffa = 0.0
+  thread Step_Counter_Thread_da47e02a_5725_45f9_b987_572799939ca4():
+    while (True):
+      step_count_ee365b31_dd5a_4805_94e4_61c0a16f6ffa = step_count_ee365b31_dd5a_4805_94e4_61c0a16f6ffa + 1.0
+      sync()
+    end
+  end
+  run Step_Counter_Thread_da47e02a_5725_45f9_b987_572799939ca4()
+  global test_i_1=1
+  global d02_amp_sw_p=p[0.24105888676069087,-0.5883807075174515,0.04253071488024829,-2.1390614672735473,-2.2744356634124774,0.025529647469294644]
+  global d02_home_p=p[0.1732682021082889,-0.2191980622028465,0.14462836758288314,-2.2457417015242487,-2.168126990777858,0.02403181694774056]
+  global d02_plug_p=p[0.03941834447547716,-0.5768816082210633,0.04943546801341098,-2.245775473613361,-2.1681595833388108,0.024084681080175536]
+  global g01_bolt_apprch=p[0.2197530505028727,-0.34935378922314203,0.22112879372511315,-0.10675922764210362,-2.959767196742132,-0.7482006727987155]
+  global g01_home=p[0.0940623920741982,-0.4351036418929621,0.2266362942491284,-0.5557952714212159,-3.08938195696355,-0.01723016519626886]
+  global g01_nut_pickup=p[0.26030397972067465,-0.6865422937981095,0.014802496249386315,0.08461618002280345,3.140374576802358,1.4297837170641528E-4]
+  global left_edge=p[0.0,-0.75,0.0,1.5707963267948966,9.618353468608949E-17,-9.618353468608949E-17]
+  global table_plane=p[0.0,0.0,0.0,3.141592653589793,1.9236706937217898E-16,0.0]
+  while (True):
+    $ 1 "Robot Program"
+    $ 2 "Force"
+    sleep(0.02)
+    zero_ftsensor()
+    force_mode(p[0.0,0.0,0.0,0.0,0.0,0.0], [1, 1, 1, 0, 0, 0], [0.0, 0.0, 2.0, 0.0, 0.0, 0.0], 2, [0.15, 0.15, 0.15, 0.3490658503988659, 0.3490658503988659, 0.3490658503988659])
+    $ 3 "Wait: 5.0" "noBreak"
+    sleep(5.0)
+    end_force_mode()
+    stopl(5.0)
+    $ 4 "Force"
+    sleep(0.02)
+    zero_ftsensor()
+    force_mode(tool_pose(), [1, 1, 1, 0, 0, 1], [0.0, 0.0, 2.0, 0.0, 0.0, 0.0], 2, [0.15, 0.15, 0.15, 0.3490658503988659, 0.3490658503988659, 1.0471975511965976])
+    $ 5 "Wait: 5.0" "noBreak"
+    sleep(5.0)
+    end_force_mode()
+    stopl(5.0)
+  end
+end

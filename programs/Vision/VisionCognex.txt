@@ -1,0 +1,73 @@
+ Program
+   BeforeStart
+     Call InitialData
+     Call InitialPosition
+     Call InitialConnect
+   Robot Program
+     Call DoPrepare
+     Call CallCameraSnap
+     Call GetCameraData
+     Call GoNewPosition
+     Call ClearAllData
+   InitialData
+     'only need three parameters from camera,so the array length will be 4'
+     TargetObject≔[0,0,0,0,0]
+     TargetX≔0
+     TargetY≔0
+     TargetRotation≔0
+     TargetPercent≔0
+     'the following variable defines how much mm 1 pixel equals'
+     PixelDistance≔(0.09*0.001)
+     RefObjectX≔199
+     RefObjectY≔188
+     set_tool_voltage(24)
+   InitialPosition
+     'Before we trigger the camera, we will go the zero point of the board'
+     MoveJ
+       Prepare
+     'MoveJ'
+     PosZeroPre≔BoardZero
+     PosZeroPick≔BoardZeroTruely
+   InitialConnect
+     Connected≔ False 
+     Loop Connected≟ False 
+       Connected≔socket_open("192.168.0.251",3000,"socket0")
+       Wait: 0.5
+   DoPrepare
+     'move the robot to a position and wait to pick object'
+     MoveJ
+       Prepare
+       Set TO[0]=Off
+       Popup: Please put target object to a place
+   CallCameraSnap
+     'after we tell camera to take snapshot,we can make a stopwatch to see the responese time of the camera'
+     Loop 1 times
+       socket_send_string("r","socket0")
+       socket_send_byte(13,"socket0")
+       Wait: 0.01
+   GetCameraData
+     'wait until the camare give me data'
+     Loop TargetObject[0]≟0
+       TargetObject≔socket_read_ascii_float(4,"socket0")
+       Wait: 0.1
+     'put the data into my own variable,remember the TargetObject[0] has stored the array length'
+     TargetX≔(TargetObject[1]-RefObjectX)*PixelDistance
+     TargetY≔(TargetObject[2]-RefObjectY)*PixelDistance
+     TargetRotation≔-d2r(TargetObject[3])
+     TargetPercent≔TargetObject[4]
+     If TargetPercent≟0
+       Popup: Not find the pattern
+   GoNewPosition
+     'the most easy way will be use function pose_trans'
+     AddPos≔p[-TargetX,TargetY,0,0,0,TargetRotation]
+     NewPosPre≔pose_trans(PosZeroPre,AddPos)
+     NewPosPick≔pose_trans(PosZeroPick,AddPos)
+     MoveL
+       NewPosPre
+       NewPosPick
+       Set TO[0]=On
+       Wait: 1.0
+       NewPosPre
+   ClearAllData
+     TargetObject≔[0,0,0,0,0]
+     Wait: 0.01

@@ -1,0 +1,32 @@
+ Program
+   Robot Program
+     MoveJ
+       Waypoint_1
+     Call vision_connect
+     Loop 5 times
+       MoveL
+         Waypoint_2
+       Call vision_find
+       MoveL
+         Waypoint_1
+     Call vision_disconnect
+   vision_connect
+     v_connected≔ False 
+     Loop v_connected≟ False 
+       v_connected≔socket_open("192.168.0.251",3000,"socket0")
+       Wait: 0.2
+       TargetObject = [0,0,0,0,0,0]
+   vision_disconnect
+     v_connected≔ False 
+     socket_close("socket0")
+   vision_find
+     socket_send_line("r","socket0")
+     TargetObject≔[0,0,0,0,0,0]
+     Loop TargetObject[0]≟0
+       TargetObject≔socket_read_ascii_float(5,"socket0")
+       Wait: 0.1
+     Vcommand_idx≔TargetObject[1]
+     TargetX≔TargetObject[2]
+     TargetY≔TargetObject[3]
+     TargetRotation≔-d2r(TargetObject[4])
+     TargetPercent≔TargetObject[5]

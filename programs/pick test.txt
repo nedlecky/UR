@@ -1,0 +1,22 @@
+ Program
+   BeforeStart
+     Gripper Activate
+     Gripper Open (1)
+   Robot Program
+     'MoveJ'
+     Loop 1 times
+       MoveL
+         Waypoint_2
+         Gripper Close (1)
+         Wait: 1.0
+         Waypoint_1
+       MoveJ
+         Waypoint_5
+         Waypoint_4
+       MoveL
+         Waypoint_3
+         Gripper Open (1)
+         Waypoint_4
+       MoveJ
+         Waypoint_5
+         Waypoint_1

@@ -1,0 +1,46 @@
+ Program
+   BeforeStart
+     Gripper Activate
+   Robot Program
+     Grip Check
+       If object detected          
+         Call g01_nut_dropoff
+       Else
+         Call g01_nut_pickup_1
+         Call g01_home_1
+   g01_home_1
+     MoveJ
+       g01_home
+     Script: g01_wrap.script
+   g01_nut_pickup_1
+     Grip Check
+       If object detected          
+         Halt
+     Gripper Close (1)
+     MoveL
+       g01_nut_pickup
+       Direction: Tool Z+
+         Until (distance)
+           g01_nut_pickup
+           Popup: No nut
+         Until (tool_contact_detection)
+           Gripper Move21mm (1)
+           Direction: Tool Z+
+             Until (tool_contact_detection)
+           Gripper Close (1)
+           Gripper Move18mm (1)
+           Script: rot90.script
+           Gripper Close (1)
+           Gripper Move18mm (1)
+           Script: nut_pick_trick.script
+           Gripper Close (1)
+       g01_nut_pickup
+   g01_nut_dropoff
+     Grip Check
+       If object detected          
+         MoveL
+           g01_nut_pickup
+           Direction: Tool Z+
+             Until (tool_contact_detection)
+               Gripper Move21mm (1)
+           g01_nut_pickup

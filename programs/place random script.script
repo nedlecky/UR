@@ -1,0 +1,4 @@
+cur_p = get_actual_tcp_pose()
+cur_p[0] = cur_p[0] + (random() - 0.5) * 0.01
+cur_p[1] = cur_p[1] + (random() - 0.5) * 0.01
+movel(cur_p)

@@ -1,0 +1,54 @@
+ Program
+   Robot Program
+     Grip Check
+       If object detected          
+         Call g01_nut_dropoff
+     Call g01_home_s
+     Call g01_nut_pickup_1
+     Call g01_apply
+     Grip Check
+       If object detected          
+         Call g01_nut_dropoff
+     Call g01_home_s
+   g01_apply
+     MoveL
+       approach_bolt
+       Direction: Tool Z+
+         Until (tool_contact_detection)
+           Force
+             Wait: 10.0
+           Gripper Move21mm (1)
+           Direction: Tool Z-
+             Until (distance)
+         Until (distance)
+           Halt
+   g01_nut_pickup_1
+     Grip Check
+       If object detected          
+         Halt
+     Gripper Close (1)
+     MoveL
+       g01_nut_pickup
+       Direction: Tool Z+
+         Until (distance)
+           g01_nut_pickup
+           Popup: No nut
+         Until (tool_contact_detection)
+           Gripper Move21mm (1)
+           Direction: Tool Z+
+             Until (tool_contact_detection)
+           Gripper Close (1)
+       g01_nut_pickup
+   g01_nut_dropoff
+     Grip Check
+       If object detected          
+         MoveL
+           g01_nut_pickup
+           Direction: Tool Z+
+             Until (tool_contact_detection)
+               Gripper Move21mm (1)
+           g01_nut_pickup
+   g01_home_s
+     MoveJ
+       g01_home
+     Script: g01_wrap.script

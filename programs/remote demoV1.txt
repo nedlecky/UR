@@ -1,0 +1,52 @@
+ Program
+   BeforeStart
+     Gripper Activate
+   Robot Program
+     MoveJ
+       home
+       Loop 2 times
+         Loop 2 times
+           pick
+             MoveJ
+               above_pick
+               Gripper Open (1)
+             MoveL
+               pick
+               Gripper Close (1)
+               Grip Check
+                 If object not detected          
+                   Insights: OUT OF PATRS
+                   Popup: Out of parts
+               above_pick
+           MoveJ
+             outside_machine
+             inside_machine
+             above_vise
+           MoveL
+             inside_vise
+             Wait: 1.0
+             above_vise
+           MoveJ
+             inside_machine
+             outside_machine
+           place
+             MoveL
+               above_pick
+               pick
+               Gripper Open (1)
+               above_pick
+         Inspect
+           MoveL
+             pick
+             Gripper Close (1)
+             above_pick
+             MoveJ
+               trans
+               inspect_part
+               Popup: Check for defects
+               trans
+               above_pick
+               pick
+               Gripper Open (1)
+               above_pick
+               home

@@ -1,0 +1,10 @@
+ Program
+   Robot Program
+     Grip Check
+       If object detected          
+         MoveL
+           g01_nut_pickup
+           Direction: Tool Z+
+             Until (tool_contact_detection)
+               Gripper Move21mm (1)
+           g01_nut_pickup

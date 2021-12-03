@@ -1,0 +1,9 @@
+ Program
+   Robot Program
+     Gripper Close (1)
+     MoveL
+       d02_amp_sw_p
+       Zero FT Sensor
+       Force Control
+         Wait: 2.0
+       d02_amp_sw_p

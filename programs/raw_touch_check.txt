@@ -1,0 +1,35 @@
+ Program
+   Init Variables
+   BeforeStart
+     seek_v≔seek_v
+   Robot Program
+     Call Pick1
+     Call Place2
+     Call Pick2
+     Call Place1
+   Pick1
+     MoveL
+       approach1
+       Direction: Tool Z+
+         Until (tool_contact_detection)
+         Until (distance)
+       approach1
+   Place2
+     MoveL
+       approach2
+       Direction: Tool Z+
+         Until (tool_contact_detection)
+       approach2
+   Pick2
+     MoveL
+       approach2
+       Direction: Tool Z+
+         Until (tool_contact_detection)
+         Until (distance)
+       approach2
+   Place1
+     MoveL
+       approach1
+       Direction: Tool Z+
+         Until (tool_contact_detection)
+       approach1

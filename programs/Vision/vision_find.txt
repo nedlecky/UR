@@ -1,0 +1,12 @@
+ Program
+   Robot Program
+     socket_send_line("r","socket0")
+     TargetObject≔[0,0,0,0,0,0]
+     Loop TargetObject[0]≟0
+       TargetObject≔socket_read_ascii_float(5,"socket0")
+       Wait: 0.1
+     Vcommand_idx≔TargetObject[1]
+     TargetX≔TargetObject[2]
+     TargetY≔TargetObject[3]
+     TargetRotation≔-d2r(TargetObject[4])
+     TargetPercent≔TargetObject[5]

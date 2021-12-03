@@ -1,0 +1,19 @@
+ Program
+   BeforeStart
+     Gripper Activate
+     initial_p≔get_actual_tcp_pose()
+     MoveJ
+       initial_p
+   Robot Program
+     Gripper Close (1)
+     MoveL
+       home
+     Loop
+       Grip Check
+         If object not detected          
+           If RearPlc
+             MoveL
+               Pick_start_0
+           If  not FrontProxEMPTY
+             MoveL
+               pick_start_1

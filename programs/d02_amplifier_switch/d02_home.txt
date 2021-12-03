@@ -1,0 +1,7 @@
+ Program
+   Robot Program
+     Gripper Activate
+     Gripper Move17mm (1)
+     Gripper Close (1)
+     MoveJ
+       d02_home_p
