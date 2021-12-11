@@ -1,4 +1,6 @@
-def LE02_50():
+def LE01_Alignment():
+  set_tcp(p[0.022,-0.014,0.182,2.6757,1.1083,0.1459])
+  set_payload(1.1, [0.0, 0.0, 0.05])
   modbus_add_signal("192.168.0.3", 255, 8195, 0, "Flash", False)
   modbus_set_signal_update_frequency("Flash", 10)
   modbus_add_signal("192.168.0.3", 255, 8192, 0, "RearPlc", False)
@@ -6,8 +8,14 @@ def LE02_50():
   modbus_add_signal("192.168.0.3", 255, 8193, 1, "MODBUS_1", False)
   modbus_set_signal_update_frequency("MODBUS_1", 10)
   modbus_set_runstate_dependent_choice("MODBUS_1",0)
-  set_tcp(p[0.0,0.0,0.175,3.141592653589793,0.0,0.0])
-  set_payload(1.1, [0.0, 0.0, 0.05])
+  step_count_9b7211e1_db72_457d_81ae_5d1cebb1ad4a = 0.0
+  thread Step_Counter_Thread_da9e4a94_9c4e_4a4c_a85c_67649505124b():
+    while (True):
+      step_count_9b7211e1_db72_457d_81ae_5d1cebb1ad4a = step_count_9b7211e1_db72_457d_81ae_5d1cebb1ad4a + 1.0
+      sync()
+    end
+  end
+  run Step_Counter_Thread_da9e4a94_9c4e_4a4c_a85c_67649505124b()
   set_standard_analog_input_domain(0, 0)
   set_standard_analog_input_domain(1, 1)
   set_tool_analog_input_domain(0, 1)
@@ -15,16 +23,8 @@ def LE02_50():
   set_analog_outputdomain(0, 0)
   set_analog_outputdomain(1, 0)
   set_input_actions_to_default()
-  set_gravity([0.0, 0.0, 9.82])
   set_safety_mode_transition_hardness(1)
-  step_count_d6d33393_3e06_4369_bd49_e4d3eba2e10d = 0.0
-  thread Step_Counter_Thread_92b4d067_f992_4f6d_96e8_d3754e80821b():
-    while (True):
-      step_count_d6d33393_3e06_4369_bd49_e4d3eba2e10d = step_count_d6d33393_3e06_4369_bd49_e4d3eba2e10d + 1.0
-      sync()
-    end
-  end
-  run Step_Counter_Thread_92b4d067_f992_4f6d_96e8_d3754e80821b()
+  set_gravity([0.0, 0.0, 9.82])
   set_tool_communication(True, 115200, 0, 1, 1.5, 3.5)
   set_tool_output_mode(0)
   set_tool_digital_output_mode(0, 1)
@@ -1564,9 +1564,9 @@ def LE02_50():
   run read_force()
   start_node_executor()
   
-  preparationErrorXmlRpcClient = rpc_factory("xmlrpc","http://localhost:45391")
-  contactOffsetXmlRpcClient = rpc_factory("xmlrpc","http://localhost:34373")
-  palletizerXmlRpcClient = rpc_factory("xmlrpc","http://localhost:34269")
+  preparationErrorXmlRpcClient = rpc_factory("xmlrpc","http://localhost:40715")
+  contactOffsetXmlRpcClient = rpc_factory("xmlrpc","http://localhost:43521")
+  palletizerXmlRpcClient = rpc_factory("xmlrpc","http://localhost:39767")
     ###############################################################
     # Halt if a script preparation error occurred
     ###############################################################
@@ -4551,17 +4551,94 @@ def LE02_50():
       sleep(0.008)
   end
   # end: URCap Installation Node
-  global Vertical_p=p[.296585680094, -.399637558985, .157461109379, .000097153768, .000028254541, -.006824679779]
-  global Vertical_q=[1.9372755289077759, -1.5250469011119385, 1.9316032568561, -1.9771095714964808, 4.713090419769287, 3.515078067779541]
-  global Tilted_1_p=p[.296603543365, -.399668034247, .157504466887, -.559322118971, .006991454546, -.006797592251]
-  global Tilted_1_q=[2.089529037475586, -1.6328712902464808, 2.3028133551227015, -2.734377523461813, 4.439613342285156, 3.599053144454956]
+  global hover_p=p[.299990634446, -.399959863880, .049999233377, .000098472213, .000055195303, -.000009493138]
+  global hover_q=[1.9435266256330017, -1.37245638788381, 2.078749481834283, -2.276835104032603, 4.713293552399105, 3.5149700641627177]
+  global on_target_p=p[.299978968763, -.399966581705, .004980040548, .000057167755, .000066750014, .000069598756]
+  global on_target_q=[1.943442463874817, -1.286923126583435, 2.122359100972311, -2.4060121975340785, 4.713281631469727, 3.5150301456451416]
+  global image_pose_p=p[.299991722625, -.399925463756, .099974262877, .000130728938, .000074051385, .000047955434]
+  global image_pose_q=[1.9436224699020386, -1.4510566753200074, 2.0158098379718226, -2.1352583370604457, 4.713210105895996, 3.5147783756256104]
+  def calculate_point_to_move_towards(feature, direction, position_distance):
+    local posDir=[direction[0], direction[1], direction[2]]
+    if (norm(posDir) < 1e-6):
+      return get_target_waypoint()
+    end
+    local direction_vector_normalized=normalize(posDir)
+    local displacement_pose=p[direction_vector_normalized[0] * position_distance,direction_vector_normalized[1] * position_distance,direction_vector_normalized[2] * position_distance,0,0,0]
+    local wanted_displacement_in_base_frame=pose_sub(pose_trans(feature, displacement_pose), feature)
+    return pose_add(get_target_waypoint(), wanted_displacement_in_base_frame)
+  end
+  def move_on_axis():
+    $ 29 "move_on_axis" "noBreak"
+    $ 30 "MoveL"
+    $ 31 "Direction: Tool Z+"
+    global move_thread_flag_31=0
+    thread move_thread_31():
+      enter_critical
+      move_thread_flag_31 = 1
+      local towardsPos=calculate_point_to_move_towards(get_forward_kin(), [0.0,0.0,1.0], 0.05)
+      movel(towardsPos, a=1.2, v=0.25)
+      move_thread_flag_31 = 2
+      exit_critical
+    end
+    move_thread_flag_31 = 0
+    move_thread_han_31 = run move_thread_31()
+    while (True):
+      sleep(1.0E-10)
+      if (move_thread_flag_31 > 1):
+        join move_thread_han_31
+        $ 32 "Until (distance)"
+        break
+      end
+      sync()
+    end
+    $ 33 "Direction: Tool Z-"
+    global move_thread_flag_33=0
+    thread move_thread_33():
+      enter_critical
+      move_thread_flag_33 = 1
+      local towardsPos=calculate_point_to_move_towards(get_forward_kin(), [0.0,0.0,-1.0], 0.05)
+      movel(towardsPos, a=1.2, v=0.25)
+      move_thread_flag_33 = 2
+      exit_critical
+    end
+    move_thread_flag_33 = 0
+    move_thread_han_33 = run move_thread_33()
+    while (True):
+      sleep(1.0E-10)
+      if (move_thread_flag_33 > 1):
+        join move_thread_han_33
+        $ 34 "Until (distance)"
+        break
+      end
+      sync()
+    end
+    $ 35 "Direction: Tool Z+"
+    global move_thread_flag_35=0
+    thread move_thread_35():
+      enter_critical
+      move_thread_flag_35 = 1
+      local towardsPos=calculate_point_to_move_towards(get_forward_kin(), [0.0,0.0,1.0], 0.025)
+      movel(towardsPos, a=1.2, v=0.25)
+      move_thread_flag_35 = 2
+      exit_critical
+    end
+    move_thread_flag_35 = 0
+    move_thread_han_35 = run move_thread_35()
+    while (True):
+      sleep(1.0E-10)
+      if (move_thread_flag_35 > 1):
+        join move_thread_han_35
+        $ 36 "Until (distance)"
+        break
+      end
+      sync()
+    end
+  end
   $ 1 "BeforeStart"
-  $ 2 "'Rev 2021_12_02am 01'"
-  # 'Rev 2021_12_02am 01'
   # begin: URCap Program Node
   #   Source: Robotiq_Grippers, 1.8.6.7016, Robotiq Inc.
   #   Type: Gripper Activate
-  $ 3 "Gripper Activate"
+  $ 2 "Gripper Activate"
   
   kill rq_gripper_communication_thread
   rq_gripper_communication_thread_started = False
@@ -4587,27 +4664,71 @@ def LE02_50():
   
   rq_activate_all_grippers(False)
   # end: URCap Program Node
+  # begin: URCap Program Node
+  #   Source: Robotiq_Grippers, 1.8.6.7016, Robotiq Inc.
+  #   Type: Gripper
+  $ 3 "Gripper Close (1)"
+  if not(gripper_connected[0]):
+    popup("Gripper 1 must be connected to run this program.", "No connection", False, True, True)
+  end
+  if not(rq_is_gripper_activated("1")):
+    popup("Gripper 1 is not activated. Go to Installation tab > Gripper to activate it and run the program again.", "Not activated", False, True, True)
+  end
+  rq_set_pos_spd_for(255, 255, 255, "1")
+  rq_wait_pos_spe_for_request(255, 255, 255, "1")
+  rq_go_to("1")
+  rq_wait("1")
+  # end: URCap Program Node
   $ 4 "start_pose≔get_actual_tcp_pose()"
   global start_pose= get_actual_tcp_pose ()
   $ 5 "MoveJ"
   $ 6 "start_pose" "breakAfter"
   movej(start_pose, a=1.3962634015954636, v=1.0471975511965976)
   $ 7 "Robot Program"
-  $ 8 "'Rev 2021_12_02am 01'"
-  # 'Rev 2021_12_02am 01'
-  $ 9 "MoveL"
-  $ 10 "Vertical" "breakAfter"
-  movel(Vertical_p, a=1.2, v=0.25)
-  $ 11 "Tilted_1" "breakAfter"
-  movel(Tilted_1_p, a=1.2, v=0.25)
-  $ 12 "Set Relay120VAC=On"
-  set_standard_digital_out(2, True)
-  $ 13 "Wait: 1.0"
-  sleep(1.0)
-  $ 14 "Set Relay120VAC=Off"
-  set_standard_digital_out(2, False)
-  $ 15 "Vertical" "breakAfter"
-  movel(Vertical_p, a=1.2, v=0.25)
-  $ 16 "response≔'50 success'"
-  global response="50 success"
+  $ 8 "'2F85 Tool vertical above box'"
+  # '2F85 Tool vertical above box'
+  $ 9 "MoveJ"
+  $ 10 "hover" "breakAfter"
+  set_tcp(p[0.0,0.0,0.175,3.141592653589793,0.0,0.0])
+  movej(get_inverse_kin(hover_p, qnear=hover_q), a=1.3962634015954636, v=1.0471975511965976)
+  $ 11 "MoveL"
+  $ 12 "on_target" "breakAfter"
+  set_tcp(p[0.0,0.0,0.175,3.141592653589793,0.0,0.0])
+  movel(on_target_p, a=1.2, v=0.25)
+  $ 13 "Call move_on_axis"
+  move_on_axis()
+  $ 14 "image_pose" "breakAfter"
+  set_tcp(p[0.0,0.0,0.175,3.141592653589793,0.0,0.0])
+  movel(image_pose_p, a=1.2, v=0.25)
+  $ 15 "MoveL"
+  $ 16 "on_target" "breakAfter"
+  set_tcp(p[-0.001,0.026,0.184,-2.8797932657906435,0.0,0.0])
+  movel(on_target_p, a=1.2, v=0.25)
+  $ 17 "Call move_on_axis"
+  move_on_axis()
+  $ 18 "image_pose" "breakAfter"
+  set_tcp(p[-0.001,0.026,0.184,-2.8797932657906435,0.0,0.0])
+  movel(image_pose_p, a=1.2, v=0.25)
+  $ 19 "MoveL"
+  $ 20 "on_target" "breakAfter"
+  set_tcp(p[-0.015,-0.024,0.18,2.6757,-1.1083,-0.1459])
+  movel(on_target_p, a=1.2, v=0.25)
+  $ 21 "Call move_on_axis"
+  move_on_axis()
+  $ 22 "image_pose" "breakAfter"
+  set_tcp(p[-0.015,-0.024,0.18,2.6757,-1.1083,-0.1459])
+  movel(image_pose_p, a=1.2, v=0.25)
+  $ 23 "MoveL"
+  $ 24 "on_target" "breakAfter"
+  set_tcp(p[0.022,-0.014,0.182,2.6757,1.1083,0.1459])
+  movel(on_target_p, a=1.2, v=0.25)
+  $ 25 "Call move_on_axis"
+  move_on_axis()
+  $ 26 "image_pose" "breakAfter"
+  set_tcp(p[0.022,-0.014,0.182,2.6757,1.1083,0.1459])
+  movel(image_pose_p, a=1.2, v=0.25)
+  $ 27 "MoveL"
+  $ 28 "hover" "breakAfter"
+  set_tcp(p[0.0,0.0,0.175,3.141592653589793,0.0,0.0])
+  movel(hover_p, a=1.2, v=0.25)
 end

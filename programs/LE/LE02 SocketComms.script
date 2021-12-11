@@ -1,4 +1,9 @@
 def LE02_SocketComms():
+  set_tool_communication(True, 115200, 0, 1, 1.5, 3.5)
+  set_tool_output_mode(0)
+  set_tool_digital_output_mode(0, 1)
+  set_tool_digital_output_mode(1, 1)
+  set_tool_voltage(24)
   modbus_add_signal("192.168.0.3", 255, 8195, 0, "Flash", False)
   modbus_set_signal_update_frequency("Flash", 10)
   modbus_add_signal("192.168.0.3", 255, 8192, 0, "RearPlc", False)
@@ -6,8 +11,15 @@ def LE02_SocketComms():
   modbus_add_signal("192.168.0.3", 255, 8193, 1, "MODBUS_1", False)
   modbus_set_signal_update_frequency("MODBUS_1", 10)
   modbus_set_runstate_dependent_choice("MODBUS_1",0)
-  set_tcp(p[0.0,0.0,0.175,3.141592653589793,0.0,0.0])
-  set_payload(1.1, [0.0, 0.0, 0.05])
+  set_gravity([0.0, 0.0, 9.82])
+  step_count_0b8c44ed_0268_49a6_a424_5636aba89b49 = 0.0
+  thread Step_Counter_Thread_d0e34248_becb_42b8_b439_99de6f955581():
+    while (True):
+      step_count_0b8c44ed_0268_49a6_a424_5636aba89b49 = step_count_0b8c44ed_0268_49a6_a424_5636aba89b49 + 1.0
+      sync()
+    end
+  end
+  run Step_Counter_Thread_d0e34248_becb_42b8_b439_99de6f955581()
   set_standard_analog_input_domain(0, 0)
   set_standard_analog_input_domain(1, 1)
   set_tool_analog_input_domain(0, 1)
@@ -15,21 +27,9 @@ def LE02_SocketComms():
   set_analog_outputdomain(0, 0)
   set_analog_outputdomain(1, 0)
   set_input_actions_to_default()
-  set_gravity([0.0, 0.0, 9.82])
+  set_tcp(p[0.0,0.0,0.175,3.141592653589793,0.0,0.0])
+  set_payload(1.1, [0.0, 0.0, 0.05])
   set_safety_mode_transition_hardness(1)
-  step_count_d6d33393_3e06_4369_bd49_e4d3eba2e10d = 0.0
-  thread Step_Counter_Thread_92b4d067_f992_4f6d_96e8_d3754e80821b():
-    while (True):
-      step_count_d6d33393_3e06_4369_bd49_e4d3eba2e10d = step_count_d6d33393_3e06_4369_bd49_e4d3eba2e10d + 1.0
-      sync()
-    end
-  end
-  run Step_Counter_Thread_92b4d067_f992_4f6d_96e8_d3754e80821b()
-  set_tool_communication(True, 115200, 0, 1, 1.5, 3.5)
-  set_tool_output_mode(0)
-  set_tool_digital_output_mode(0, 1)
-  set_tool_digital_output_mode(1, 1)
-  set_tool_voltage(24)
   global test_i_1=730384
   global d02_amp_sw_p=p[0.10714458256936105,-0.47048453730502693,0.04579137668575087,2.7480003490896445,1.5224606692420801,6.086063994053833E-5]
   global d02_home_p=p[0.1732682021082889,-0.2191980622028465,0.14462836758288314,-2.2457417015242487,-2.168126990777858,0.02403181694774056]
@@ -1564,9 +1564,9 @@ def LE02_SocketComms():
   run read_force()
   start_node_executor()
   
-  preparationErrorXmlRpcClient = rpc_factory("xmlrpc","http://localhost:45391")
-  contactOffsetXmlRpcClient = rpc_factory("xmlrpc","http://localhost:34373")
-  palletizerXmlRpcClient = rpc_factory("xmlrpc","http://localhost:34269")
+  preparationErrorXmlRpcClient = rpc_factory("xmlrpc","http://localhost:45603")
+  contactOffsetXmlRpcClient = rpc_factory("xmlrpc","http://localhost:39959")
+  palletizerXmlRpcClient = rpc_factory("xmlrpc","http://localhost:38665")
     ###############################################################
     # Halt if a script preparation error occurred
     ###############################################################
@@ -4553,28 +4553,32 @@ def LE02_SocketComms():
   # end: URCap Installation Node
   global up_pose_p=p[.296599693448, -.399646554996, .157490595393, .000382199785, .008505843627, -.004555659266]
   global up_pose_q=[1.9417506456375122, -1.5218691390803833, 1.92726976076235, -1.97259583095693, 4.705292224884033, 3.5172958374023438]
-  global start_pose_p=p[.296589014811, -.399641561507, .096629603339, .000448352542, .008521195100, -.004591925531]
-  global start_pose_q=[1.9416667222976685, -1.4486417335322876, 2.0221431891070765, -2.140628000298971, 4.705471515655518, 3.5174877643585205]
-  global Vertical_p=p[.296585680094, -.399637558985, .157461109379, .000097153768, .000028254541, -.006824679779]
-  global Vertical_q=[1.9372755289077759, -1.5250469011119385, 1.9316032568561, -1.9771095714964808, 4.713090419769287, 3.515078067779541]
-  global Tilted_1_p=p[.296603543365, -.399668034247, .157504466887, -.559322118971, .006991454546, -.006797592251]
-  global Tilted_1_q=[2.089529037475586, -1.6328712902464808, 2.3028133551227015, -2.734377523461813, 4.439613342285156, 3.599053144454956]
+  global start_pose_1_p=p[.296589014811, -.399641561507, .096629603339, .000448352542, .008521195100, -.004591925531]
+  global start_pose_1_q=[1.9416667222976685, -1.4486417335322876, 2.0221431891070765, -2.140628000298971, 4.705471515655518, 3.5174877643585205]
+  global Vertical_1_p=p[.296585680094, -.399637558985, .157461109379, .000097153768, .000028254541, -.006824679779]
+  global Vertical_1_q=[1.9372755289077759, -1.5250469011119385, 1.9316032568561, -1.9771095714964808, 4.713090419769287, 3.515078067779541]
+  global Tilted_2_p=p[.296603543365, -.399668034247, .157504466887, -.559322118971, .006991454546, -.006797592251]
+  global Tilted_2_q=[2.089529037475586, -1.6328712902464808, 2.3028133551227015, -2.734377523461813, 4.439613342285156, 3.599053144454956]
+  global Vertical_2_p=p[.296585680094, -.399637558985, .157461109379, .000097153768, .000028254541, -.006824679779]
+  global Vertical_2_q=[1.9372755289077759, -1.5250469011119385, 1.9316032568561, -1.9771095714964808, 4.713090419769287, 3.515078067779541]
   def LE02_50():
-    $ 40 "LE02_50" "noBreak"
-    $ 41 "MoveL"
-    $ 42 "Vertical" "breakAfter"
-    movel(Vertical_p, a=1.2, v=0.25)
-    $ 43 "Tilted_1" "breakAfter"
-    movel(Tilted_1_p, a=1.2, v=0.25)
-    $ 44 "Set Relay120VAC=On"
+    $ 55 "LE02_50" "noBreak"
+    $ 56 "'Rev 2021_12_02am 01'"
+    # 'Rev 2021_12_02am 01'
+    $ 57 "MoveL"
+    $ 58 "Vertical_1" "breakAfter"
+    movel(Vertical_1_p, a=1.2, v=0.25)
+    $ 59 "Tilted_2" "breakAfter"
+    movel(Tilted_2_p, a=1.2, v=0.25)
+    $ 60 "Set Relay120VAC=On"
     set_standard_digital_out(2, True)
-    $ 45 "Wait: 1.0"
+    $ 61 "Wait: 1.0"
     sleep(1.0)
-    $ 46 "Set Relay120VAC=Off"
+    $ 62 "Set Relay120VAC=Off"
     set_standard_digital_out(2, False)
-    $ 47 "Vertical" "breakAfter"
-    movel(Vertical_p, a=1.2, v=0.25)
-    $ 48 "response≔'50 success'"
+    $ 63 "Vertical_2" "breakAfter"
+    movel(Vertical_2_p, a=1.2, v=0.25)
+    $ 64 "response≔'50 success'"
     global response="50 success"
   end
   $ 1 "BeforeStart"
@@ -4607,53 +4611,60 @@ def LE02_SocketComms():
   
   rq_activate_all_grippers(False)
   # end: URCap Program Node
-  $ 3 "socket_close()"
+  $ 3 "start_pose≔get_actual_tcp_pose()"
+  global start_pose= get_actual_tcp_pose ()
+  $ 4 "MoveJ"
+  $ 5 "start_pose" "breakAfter"
+  movej(start_pose, a=1.3962634015954636, v=1.0471975511965976)
+  $ 6 "socket_close()"
   socket_close()
-  $ 4 "Wait: 0.25"
+  $ 7 "Wait: 0.25"
   sleep(0.25)
-  $ 5 "socket_is_open≔ False "
+  $ 8 "socket_is_open≔ False "
   global socket_is_open=  False  
-  $ 6 "command_index≔0"
+  $ 9 "command_index≔0"
   global command_index=0
   while (True):
-    $ 7 "Robot Program"
-    $ 8 "command_index≔command_index+1"
+    $ 10 "Robot Program"
+    $ 11 "command_index≔command_index+1"
     global command_index=command_index+1
-    $ 9 "Loop socket_is_open ≟  False "
+    $ 12 "Loop socket_is_open ≟  False "
     while (socket_is_open  ==    False  ):
-      $ 10 "socket_is_open≔socket_open('192.168.0.252', 30000)"
+      $ 13 "socket_is_open≔socket_open('192.168.0.252', 30000)"
       global socket_is_open=socket_open("192.168.0.252", 30000)
-      $ 11 "Wait: 0.5"
+      $ 14 "Wait: 0.5"
       sleep(0.5)
     end
-    $ 12 "command≔socket_read_ascii_float(5)"
+    $ 15 "command≔socket_read_ascii_float(5)"
     global command=socket_read_ascii_float(5)
-    $ 13 "response≔'Unknown command'"
+    $ 16 "response≔'Unknown command'"
     global response="Unknown command"
-    $ 14 "If command[0]≟5"
+    $ 17 "If command[0]≟5"
     if (command[0] == 5):
-      $ 15 "Switch command[1]"
+      $ 18 "socket_send_line('robot_running=True')"
+      socket_send_line("robot_running=True")
+      $ 19 "Switch command[1]"
       switch_1 = command[1]
-      $ 16 "Case 1"
+      $ 20 "Case 1"
       if (1 == switch_1):
-        $ 17 "MoveL"
-        $ 18 "up_pose" "breakAfter"
+        $ 21 "MoveL"
+        $ 22 "up_pose" "breakAfter"
         movel(up_pose_p, a=1.2, v=0.25)
-        $ 19 "response≔'moved up'"
+        $ 23 "response≔'moved up'"
         global response="moved up"
       elif (2 == switch_1):
-        $ 20 "Case 2"
-        $ 21 "MoveJ"
-        $ 22 "start_pose" "breakAfter"
-        movej(get_inverse_kin(start_pose_p, qnear=start_pose_q), a=1.3962634015954636, v=1.0471975511965976)
-        $ 23 "response≔'moved down'"
+        $ 24 "Case 2"
+        $ 25 "MoveJ"
+        $ 26 "start_pose_1" "breakAfter"
+        movej(get_inverse_kin(start_pose_1_p, qnear=start_pose_1_q), a=1.3962634015954636, v=1.0471975511965976)
+        $ 27 "response≔'moved down'"
         global response="moved down"
       elif (3 == switch_1):
-        $ 24 "Case 3"
+        $ 28 "Case 3"
         # begin: URCap Program Node
         #   Source: Robotiq_Grippers, 1.8.6.7016, Robotiq Inc.
         #   Type: Gripper
-        $ 25 "Gripper Close (1)"
+        $ 29 "Gripper Close (1)"
         if not(gripper_connected[0]):
           popup("Gripper 1 must be connected to run this program.", "No connection", False, True, True)
         end
@@ -4665,14 +4676,14 @@ def LE02_SocketComms():
         rq_go_to("1")
         rq_wait("1")
         # end: URCap Program Node
-        $ 26 "response≔'close'"
+        $ 30 "response≔'close'"
         global response="close"
       elif (4 == switch_1):
-        $ 27 "Case 4"
+        $ 31 "Case 4"
         # begin: URCap Program Node
         #   Source: Robotiq_Grippers, 1.8.6.7016, Robotiq Inc.
         #   Type: Gripper
-        $ 28 "Gripper Open (1)"
+        $ 32 "Gripper Open (1)"
         if not(gripper_connected[0]):
           popup("Gripper 1 must be connected to run this program.", "No connection", False, True, True)
         end
@@ -4684,30 +4695,53 @@ def LE02_SocketComms():
         rq_go_to("1")
         rq_wait("1")
         # end: URCap Program Node
-        $ 29 "response≔'open'"
+        $ 33 "response≔'open'"
         global response="open"
       elif (50 == switch_1):
-        $ 30 "Case 50"
-        $ 31 "Call LE02_50"
+        $ 34 "Case 50"
+        $ 35 "Call LE02_50"
         LE02_50()
+      elif (98 == switch_1):
+        $ 36 "Case 98"
+        $ 37 "response≔'socket reset'"
+        global response="socket reset"
       elif (99 == switch_1):
-        $ 32 "Case 99"
-        $ 33 "response≔'exiting'"
+        $ 38 "Case 99"
+        $ 39 "response≔'exiting'"
         global response="exiting"
       else:
-        $ 34 "Default Case"
-        $ 35 "response≔'unknown command'"
+        $ 40 "Default Case"
+        $ 41 "response≔'unknown command'"
         global response="unknown command"
       end
-      $ 36 "socket_send_line(response)"
-      socket_send_line(response)
-      $ 37 "If command[1]≟99"
-      if (command[1] == 99):
-        $ 38 "socket_close()"
+      $ 42 "socket_send_line('robot_response=' + response + '#robot_running=False')"
+      socket_send_line("robot_response=" + response + "#robot_running=False")
+      $ 43 "If command[1]≟98"
+      if (command[1] == 98):
+        $ 44 "Wait: 0.5"
+        sleep(0.5)
+        $ 45 "socket_close()"
         socket_close()
-        $ 39 "Halt"
+        $ 46 "socket_is_open≔ False "
+        global socket_is_open=  False  
+      end
+      $ 47 "If command[1]≟99"
+      if (command[1] == 99):
+        $ 48 "Wait: 0.5"
+        sleep(0.5)
+        $ 49 "socket_close()"
+        socket_close()
+        $ 50 "socket_is_open≔ False "
+        global socket_is_open=  False  
+        $ 51 "Halt"
         halt
       end
+    else:
+      $ 52 "Else" "noBreak"
+      $ 53 "command_index≔command_index+1"
+      global command_index=command_index+1
+      $ 54 "socket_set_var('robot_index', command_index)"
+      socket_set_var("robot_index", command_index)
     end
   end
 end

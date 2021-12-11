@@ -1,6 +1,9 @@
  Program
    BeforeStart
      Gripper Activate
+     start_pose≔get_actual_tcp_pose()
+     MoveJ
+       start_pose
      socket_close()
      Wait: 0.25
      socket_is_open≔ False 
@@ -13,6 +16,7 @@
      command≔socket_read_ascii_float(5)
      response≔"Unknown command"
      If command[0]≟5
+       socket_send_line("robot_running=True")
        Switch command[1]
          Case 1
            MoveL
@@ -20,7 +24,7 @@
            response≔"moved up"
          Case 2
            MoveJ
-             start_pose
+             start_pose_1
            response≔"moved down"
          Case 3
            Gripper Close (1)
@@ -30,20 +34,32 @@
            response≔"open"
          Case 50
            Call LE02_50
+         Case 98
+           response≔"socket reset"
          Case 99
            response≔"exiting"
          Default Case
            response≔"unknown command"
-       socket_send_line(response)
-       If command[1]≟99
+       socket_send_line("robot_response=" + response + "#robot_running=False")
+       If command[1]≟98
+         Wait: 0.5
          socket_close()
+         socket_is_open≔ False 
+       If command[1]≟99
+         Wait: 0.5
+         socket_close()
+         socket_is_open≔ False 
          Halt
+     Else
+       command_index≔command_index+1
+       socket_set_var("robot_index", command_index)
    LE02_50
+     'Rev 2021_12_02am 01'
      MoveL
-       Vertical
-       Tilted_1
+       Vertical_1
+       Tilted_2
        Set Relay120VAC=On
        Wait: 1.0
        Set Relay120VAC=Off
-       Vertical
+       Vertical_2
        response≔"50 success"
