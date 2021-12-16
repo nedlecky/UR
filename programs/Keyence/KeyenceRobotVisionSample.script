@@ -1,0 +1,152 @@
+def KeyenceRobotVisionSample():
+  set_standard_analog_input_domain(0, 1)
+  set_standard_analog_input_domain(1, 1)
+  set_tool_analog_input_domain(0, 1)
+  set_tool_analog_input_domain(1, 1)
+  set_analog_outputdomain(0, 0)
+  set_analog_outputdomain(1, 0)
+  set_tool_voltage(0)
+  set_standard_digital_input_action(0, "default")
+  set_standard_digital_input_action(1, "default")
+  set_standard_digital_input_action(2, "default")
+  set_standard_digital_input_action(3, "default")
+  set_standard_digital_input_action(4, "default")
+  set_standard_digital_input_action(5, "default")
+  set_standard_digital_input_action(6, "default")
+  set_standard_digital_input_action(7, "default")
+  set_tool_digital_input_action(0, "default")
+  set_tool_digital_input_action(1, "default")
+  set_tcp(p[0.0,0.0,0.0,0.0,0.0,0.0])
+  set_payload(0.0)
+  set_gravity([0.0, 0.0, 9.82])
+  global triggerResult=0
+  $ 1 "BeforeStart"
+  #  This program is a sample program for line operation.
+  #  When using it, please verify the actual operation of the robot
+  #  and make the necessary changes first before implementation.
+  
+  def CUR_SetUpCamera(CAM, IP_Address, Port):
+  # Pass parameters to global variables.
+  global Camera = CAM
+  varmsg("Camera", Camera)
+  
+  global IP = IP_Address
+  varmsg("IP", IP)
+  
+  global TelPort = Port
+  varmsg("TelPort", TelPort)
+  
+  end
+  
+  
+  def CUR_InitComm(CAM):
+  # Open the connection.
+  global connected = False
+  while (not  connected):
+  global connected = socket_open(IP, TelPort, Camera)	# Establish connection to camera
+  varmsg("connected", connected)						# server via Telnet
+  end
+  return connected
+  end
+  
+  def CUR_TriggImage(CAM):
+  # Send a trigger command.
+  global Camera = CAM
+  varmsg("Camera", Camera)
+  socket_send_string("T1", Camera)			# Set Event and Wait; Acquisition Command
+  socket_send_byte(13, Camera)				# Carriage Return 0Dhex 13dec
+  socket_send_byte(10, Camera)				# Line Feed 0Ahex 10dec
+  global React = socket_read_string(Camera)	# Read answer from camera
+  varmsg("React", React)
+  sleep(1.0)
+  global PositionFromCamera = socket_read_ascii_float(8, Camera)
+  varmsg("PositionFromCamera", PositionFromCamera)
+  # Wait for the reply.
+  global posX = PositionFromCamera[2] / 1000
+  global posY = PositionFromCamera[3] / 1000
+  global posZ = PositionFromCamera[4] / 1000
+  global angX = d2r(PositionFromCamera[5])
+  global angY = d2r(PositionFromCamera[6])
+  global angZ = d2r(PositionFromCamera[7])
+  global VisionPos = p[posX, posY, posZ, angX, angY, angZ]
+  if PositionFromCamera[0] != 8:
+  return 1
+  elif PositionFromCamera[1] != 0:
+  return 2
+  end
+  return 0
+  end
+  
+  
+  def CUR_Move():
+  # Move to the specified position.
+  varmsg("VisionPos", VisionPos)
+  local RealAccel = 0.1
+  local RealSpeed = 0.1
+  
+  A = RPY_to_AxisAngle(VisionPos)
+  movel(A, RealAccel, RealSpeed)
+  end
+  
+  def RPY_to_AxisAngle(R):
+  # Conversion (RPY to AxisAngle)
+  Rx = R[3] / 2.0
+  Ry = R[4] / 2.0
+  Rz = R[5] / 2.0
+  
+  Cx = cos(Rx)
+  Sx = sin(Rx)
+  Cy = cos(Ry)
+  Sy = sin(Ry)
+  Cz = cos(Rz)
+  Sz = sin(Rz)
+  
+  Angle = 2.0 * acos(Cx*Cy*Cz + Sx*Sy*Sz)
+  x = Sx*Cy*Cz - Cx*Sy*Sz
+  y = Cx*Sy*Cz + Sx*Cy*Sz
+  z = -Sx*Sy*Cz + Cx*Cy*Sz
+  Norm = sqrt(x*x + y*y + z*z)
+  Ratio = Angle / Norm
+  Ax = x * Ratio
+  Ay = y * Ratio
+  Az = z * Ratio
+  Ans = p[R[0], R[1], R[2], Ax, Ay, Az]
+  
+  return Ans
+  end
+  
+  def CUR_CloseComm(CAM):
+  # Close the connection.
+  global Camera = CAM
+  varmsg("Camera", Camera)
+  socket_close(Camera)
+  end
+  $ 3 "CUR_SetUpCamera('Cam1', '192.168.0.10', 8500)"
+  CUR_SetUpCamera("Cam1", "192.168.0.10", 8500)
+  $ 4 "If CUR_InitComm('Cam1')==False"
+  if (CUR_InitComm("Cam1")==False):
+    $ 5 "Popup"
+    popup("Communication Lost", "Message", False, True, blocking=True)
+  end
+  while (True):
+    $ 6 "Robot Program"
+    $ 7 "triggerResult≔CUR_TriggImage('Cam1')"
+    global triggerResult=CUR_TriggImage("Cam1")
+    $ 8 "If triggerResult==1"
+    if (triggerResult==1):
+      $ 9 "Popup"
+      popup("Communication Error", "Message", False, True, blocking=True)
+    end
+    $ 10 "If triggerResult==2"
+    if (triggerResult==2):
+      $ 11 "Popup"
+      popup("Search Error", "Message", False, True, blocking=True)
+    end
+    $ 12 "CUR_Move()"
+    CUR_Move()
+    $ 13 "CUR_CloseComm('Cam1')"
+    CUR_CloseComm("Cam1")
+    $ 14 "Halt"
+    halt
+  end
+end

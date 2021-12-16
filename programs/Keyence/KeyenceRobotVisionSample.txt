@@ -1,0 +1,15 @@
+ Program
+   BeforeStart
+     Script: Sample.script
+     CUR_SetUpCamera("Cam1", "192.168.0.10", 8500)
+     If CUR_InitComm("Cam1")==False
+       Popup
+   Robot Program
+     triggerResult≔CUR_TriggImage("Cam1")
+     If triggerResult==1
+       Popup
+     If triggerResult==2
+       Popup
+     CUR_Move()
+     CUR_CloseComm("Cam1")
+     Halt
