@@ -1,0 +1,52 @@
+ Program
+   BeforeStart
+     Script: LEcore.script
+     CUR_SetUpCamera("Cam1", "192.168.0.252", 30000)
+   Robot Program
+     Loop
+       If  not connected
+         If CUR_InitComm("Cam1")==False
+           Popup: Communication Connection Failure
+       triggerResult≔CUR_ProcCommand("Cam1")
+       If triggerResult==1
+         response≔"LEfunc "
+         Switch nComID
+           Case 20
+             MoveL
+               LEimage_pose
+           Case 21
+             MoveL
+               LEontarget_pose
+           Case 30
+             MoveL
+               LEimage_pose
+           Case 31
+             MoveL
+               LEimage_pose
+           Case 50
+             Call LE02_50
+           Case 98
+             response≔"Reseting socket"
+           Case 99
+             response≔"Exiting"
+           Default Case
+             response≔"ERROR LEfunc "
+         socket_send_line("robot_response=" + response, Camera)
+         If nComID≟98
+           Wait: 0.5
+           CUR_CloseComm("Cam1")
+           Wait: 2.0
+         If nComID≟99
+           Wait: 0.5
+           CUR_CloseComm("Cam1")
+           Halt
+   LE02_50
+     'Rev 2021_12_02am 01'
+     MoveL
+       Vertical_1
+       Tilted_2
+       Set Relay120VAC=On
+       Wait: 1.0
+       Set Relay120VAC=Off
+       Vertical_2
+       response≔"50 success"

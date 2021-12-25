@@ -1,0 +1,13 @@
+ Program
+   BeforeStart
+     Script: Setup.script
+     CUR_SetUpCamera("Cam1", "192.168.0.252", 30000)
+     If CUR_InitComm("Cam1")==False
+       Popup: Communication Lost
+   Robot Program
+     Loop
+       triggerResult≔CUR_ProcCommand("Cam1")
+       If triggerResult==1
+         'Popup: Command Error'
+     CUR_CloseComm("Cam1")
+     Halt

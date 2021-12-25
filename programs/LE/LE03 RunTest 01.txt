@@ -1,0 +1,33 @@
+ Program
+   BeforeStart
+     Gripper Activate
+     Gripper Close (1)
+     start_pose≔get_actual_tcp_pose()
+     MoveJ
+       start_pose
+   Robot Program
+     '2F85 Tool vertical above box'
+     MoveJ
+       image_pose
+     MoveL
+       on_target
+       Call move_on_axis
+       image_pose
+     MoveL
+       on_target
+       Call move_on_axis
+       image_pose
+     MoveL
+       on_target
+       Call move_on_axis
+       image_pose
+     MoveL
+       image_pose
+   move_on_axis
+     MoveL
+       Direction: Tool Z+
+         Until (distance)
+       Direction: Tool Z-
+         Until (distance)
+       Direction: Tool Z+
+         Until (distance)
