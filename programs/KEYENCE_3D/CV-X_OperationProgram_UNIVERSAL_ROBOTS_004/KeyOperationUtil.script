@@ -1,0 +1,438 @@
+#  This program is a sample program for line operation.
+#  When using it, please verify the actual operation of the robot
+#  and make the necessary changes first before implementation.
+
+global g_key_no_path_count  = 0
+global g_key_waypoint_num   = [0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0]
+global g_key_leg_type       = [0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0]
+global g_key_leg_speed      = [0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0]
+global g_key_capture_wait_pos = [0,0,0,0,0,0]
+global g_key_waypoint_data  = [0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 
+                               0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 
+                               0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 
+                               0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 
+                               0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 
+                               0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 
+
+                               0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 
+                               0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 
+                               0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 
+                               0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 
+                               0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 
+                               0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 
+
+                               0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 
+                               0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 
+                               0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 
+                               0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 
+                               0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 
+                               0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 
+
+                               0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 
+                               0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 
+                               0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 
+                               0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 
+                               0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 
+                               0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0]
+global g_recvd_list         = [0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0,
+                               0,0,0,0,0, 0,0,0,0,0]
+
+global g_key_cmd_leg_num            = 0
+global g_key_cmd_waypoint_num       = 2
+global g_key_cmd_waypoint_data      = 3
+global g_key_cmd_slide_exe          = 16
+global g_key_cmd_trig_waypoint_idx  = 18
+global g_key_cmd_trig_leg_idx       = 19
+global g_key_cmd_next_start_pos     = 21
+global g_key_cmd_leg_speed          = 22
+global g_key_cmd_leg_num_set        = 23
+global g_key_cmd_leg_type           = 24
+global g_key_cmd_capture_waypoint   = 25
+
+global g_key_cmd_type_path          = 0
+global g_key_cmd_type_leg_set       = 1
+global g_key_cmd_type_leg_detected  = 2
+global g_key_cmd_type_waypoint      = 3
+
+global g_key_leg_type_approach      = 0
+global g_key_leg_type_grip          = 1
+global g_key_leg_type_depart        = 2
+global g_key_leg_type_place         = 3
+global g_key_leg_type_specified     = 4
+global g_key_leg_type_rel_specified = 5
+global g_key_leg_type_next_start    = 6
+
+def KeyConnect(CAM, IP_Address, Port):
+# Pass parameters to global variables.
+  global Camera = CAM
+  varmsg("Camera", Camera)
+
+  global IP = IP_Address
+  varmsg("IP", IP)
+
+  global TelPort = Port
+  varmsg("TelPort", TelPort)
+
+# Open the connection.
+  global connected = False
+  while (not  connected):
+    global connected = socket_open(IP, TelPort, Camera) # Establish connection to camera
+    varmsg("connected", connected)                      # server via Telnet
+  end
+  return connected
+end
+
+def KeyClose():
+  socket_close(Camera)
+end
+
+def KUtilGetLegType(leg_idx):
+  if g_key_slide_executed == 1 and leg_idx == g_key_leg_num - 1:
+    return g_key_leg_type_specified
+  else:
+    return g_key_leg_type[leg_idx]
+  end
+end
+
+def KUtilGetLegSpeed(leg_idx, max_speed_deg):
+  local legSpeed = 0
+  if g_key_slide_executed == 1 and leg_idx == g_key_leg_num - 1:
+    legSpeed = g_key_leg_speed[g_key_leg_num - 4]
+  else:
+    legSpeed = g_key_leg_speed[leg_idx]
+  end
+  return d2r(max_speed_deg)*legSpeed*0.01
+end
+
+def KUtilGetTrigLeg():
+  if g_key_slide_executed == 1:
+    return g_key_leg_num - 1
+  else:
+    return g_key_trig_leg_idx
+  end
+end
+
+def KUtilGetNextStartLeg():
+  if g_key_next_start_pos >= 0:
+    if g_key_slide_executed == 0:
+      return g_key_next_start_pos
+    end
+  else:
+    return -1
+  end
+  return 0
+end
+
+def KUtilGetPath():
+  local i = 0
+
+  #Get leg number
+  nRet = KUtilGetPathParam(g_key_cmd_leg_num)
+  if nRet < 1:
+    return nRet
+  end
+  global g_key_leg_num = g_recvd_list[2]
+  
+  #Get slide execution flag
+  nRet = KUtilGetPathParam(g_key_cmd_slide_exe)
+  if nRet < 1:
+    return nRet
+  end
+  global g_key_slide_executed = g_recvd_list[2]
+  
+  #Get trigger waypoint index
+  nRet = KUtilGetPathParam(g_key_cmd_trig_waypoint_idx)
+  if nRet < 1:
+    return nRet
+  end
+  global g_key_trig_waypoint_idx = g_recvd_list[2]
+
+  # Get waypoint number
+  nRet = KUtilGetLegParam(g_key_cmd_waypoint_num)
+  if nRet < 1:
+    return nRet
+  end
+  i = 0
+  while i < g_key_leg_num:
+    g_key_waypoint_num[i] = g_recvd_list[i+2]
+    i = i + 1
+  end
+  
+  #Get waypoint data
+  nRet = KUtilGetWholeWaypointData()
+  return nRet
+end
+
+def KUtilGetConfig():
+  local i = 0
+
+  #Get leg number
+  nRet = KUtilGetPathSetting(g_key_cmd_leg_num_set)
+  if nRet < 1:
+    return nRet
+  end
+  global g_key_leg_num_set = g_recvd_list[2]
+  
+  #Get trigger leg idx
+  nRet = KUtilGetPathSetting(g_key_cmd_trig_leg_idx)
+  if nRet < 1:
+    return nRet
+  end
+  global g_key_trig_leg_idx = g_recvd_list[2]
+  
+  #Get next start position
+  nRet = KUtilGetPathSetting(g_key_cmd_next_start_pos)
+  if nRet < 1:
+    return nRet
+  end
+  global g_key_next_start_pos = g_recvd_list[2]
+
+  # Get leg type setting
+  nRet = KUtilGetLegSetting(g_key_cmd_leg_type)
+  if nRet < 1:
+    return nRet
+  end
+  i = 0
+  while i < g_key_leg_num_set:
+    g_key_leg_type[i] = g_recvd_list[i+2]
+    i = i + 1
+  end
+
+  # Get leg speed setting
+  nRet = KUtilGetLegSetting(g_key_cmd_leg_speed)
+  if nRet < 1:
+    return nRet
+  end
+  i = 0
+  while i < g_key_leg_num_set:
+    g_key_leg_speed[i] = g_recvd_list[i+2]
+    i = i + 1
+  end
+
+  # Get capture wait position
+  nRet = KUtilGetCaptureWaitPos()
+  return nRet
+end
+  
+def KUtilGetPathParam(cmd):
+  #Send command to vision controller.
+  strCmd = str_cat("PPR,", cmd)
+  strCmd = str_cat(strCmd, ",")
+  strCmd = str_cat(strCmd, g_key_tool_id)
+  strCmd = str_cat(strCmd, ",")
+  strCmd = str_cat(strCmd, g_key_label_no)
+  strCmd = str_cat(strCmd, ",2")
+  KeySendString(strCmd)
+  
+  #Recieve data from vision controller
+  nRecvNum = KUtilGetRecvPrmNum(g_key_cmd_type_path)
+  return KUtilRecvResultParam(nRecvNum)
+end
+
+def KUtilGetPathSetting(cmd):
+  #Send command to vision controller.
+  strCmd = str_cat("PPR,", cmd)
+  strCmd = str_cat(strCmd, ",")
+  strCmd = str_cat(strCmd, g_key_tool_id)
+  strCmd = str_cat(strCmd, ",2")
+  KeySendString(strCmd)
+  
+  #Recieve data from vision controller
+  nRecvNum = KUtilGetRecvPrmNum(g_key_cmd_type_path)
+  return KUtilRecvResultParam(nRecvNum)
+end
+
+def KUtilGetLegParam(cmd):
+  #Send command to vision controller.
+  strCmd = str_cat("PPR,", cmd)
+  strCmd = str_cat(strCmd, ",")
+  strCmd = str_cat(strCmd, g_key_tool_id)
+  strCmd = str_cat(strCmd, ",")
+  strCmd = str_cat(strCmd, g_key_label_no)
+  strCmd = str_cat(strCmd, ",-1")
+  strCmd = str_cat(strCmd, ",2")
+  KeySendString(strCmd)
+  
+  #Recieve data from vision controller
+  nRecvNum = KUtilGetRecvPrmNum(g_key_cmd_type_leg_detected)
+  
+  nRet = KUtilRecvResultParam(nRecvNum)
+  if nRet < 1:
+    return nRet
+  end
+  
+  return nRet
+end
+
+def KUtilGetLegSetting(cmd):
+  #Send command to vision controller.
+  strCmd = str_cat("PPR,", cmd)
+  strCmd = str_cat(strCmd, ",")
+  strCmd = str_cat(strCmd, g_key_tool_id)
+  strCmd = str_cat(strCmd, ",-1")
+  strCmd = str_cat(strCmd, ",2")
+  KeySendString(strCmd)
+  
+  #Recieve data from vision controller
+  nRecvNum = KUtilGetRecvPrmNum(g_key_cmd_type_leg_set)
+  
+  nRet = KUtilRecvResultParam(nRecvNum)
+  if nRet < 1:
+    return nRet
+  end
+  
+  return nRet
+end
+
+def KUtilGetCaptureWaitPos():
+  #Send command to vision controller.
+  cmd = g_key_cmd_capture_waypoint
+  strCmd = str_cat("PPR,", cmd)
+  strCmd = str_cat(strCmd, ",")
+  strCmd = str_cat(strCmd, g_key_tool_id)
+  strCmd = str_cat(strCmd, ",2")
+  KeySendString(strCmd)
+  
+  #Recieve data from vision controller.
+  nRecvNum = KUtilGetRecvPrmNum(g_key_cmd_type_waypoint)
+  nRet = KUtilRecvResultParam(nRecvNum)
+  if nRet < 1:
+    return nRet
+  end
+
+  g_key_capture_wait_pos[0] = d2r(g_recvd_list[2])
+  g_key_capture_wait_pos[1] = d2r(g_recvd_list[3])
+  g_key_capture_wait_pos[2] = d2r(g_recvd_list[4])
+  g_key_capture_wait_pos[3] = d2r(g_recvd_list[5])
+  g_key_capture_wait_pos[4] = d2r(g_recvd_list[6])
+  g_key_capture_wait_pos[5] = d2r(g_recvd_list[7])
+
+  return 1
+end
+
+def KUtilGetWaypointData(leg_i, waypoint_i):
+  #Send command to vision controller.
+  cmd = g_key_cmd_waypoint_data
+  strCmd = str_cat("PPR,", cmd)
+  strCmd = str_cat(strCmd, ",")
+  strCmd = str_cat(strCmd, g_key_tool_id)
+  strCmd = str_cat(strCmd, ",")
+  strCmd = str_cat(strCmd, g_key_label_no)
+  strCmd = str_cat(strCmd, ",")
+  strCmd = str_cat(strCmd, leg_i)
+  strCmd = str_cat(strCmd, ",")
+  strCmd = str_cat(strCmd, waypoint_i)
+  strCmd = str_cat(strCmd, ",2")
+  KeySendString(strCmd)
+  
+  #Recieve data from vision controller.
+  nRecvNum = KUtilGetRecvPrmNum(g_key_cmd_type_waypoint)
+  nRet = KUtilRecvResultParam(nRecvNum)
+  return nRet
+end
+
+def KUtilGetWholeWaypointData():
+  nWaypointIndex = 0
+  nTotalWaypointNum =0
+  local leg_i = 0
+  while leg_i < g_key_leg_num:
+    if leg_i == 0:
+      nStartWaipointIndex = 0
+    else:
+      nStartWaipointIndex = 1
+    end
+    
+    waypoint_i = nStartWaipointIndex
+    while waypoint_i < g_key_waypoint_num[leg_i]:
+      nRet = KUtilGetWaypointData(leg_i, waypoint_i)
+      if nRet < 1:
+        return nRet
+      end
+      
+      nWaypointIndex = waypoint_i + nTotalWaypointNum
+      g_key_waypoint_data[nWaypointIndex*6 + 0] = g_recvd_list[2]
+      g_key_waypoint_data[nWaypointIndex*6 + 1] = g_recvd_list[3]
+      g_key_waypoint_data[nWaypointIndex*6 + 2] = g_recvd_list[4]
+      g_key_waypoint_data[nWaypointIndex*6 + 3] = g_recvd_list[5]
+      g_key_waypoint_data[nWaypointIndex*6 + 4] = g_recvd_list[6]
+      g_key_waypoint_data[nWaypointIndex*6 + 5] = g_recvd_list[7]
+
+      waypoint_i = waypoint_i + 1
+    end
+    
+    #Previous leg last waypoint equals next leg first waypoint.
+    #So number to be added is (leg_waypoint_number - 1).
+    nTotalWaypointNum = nTotalWaypointNum + g_key_waypoint_num[leg_i] - 1
+    
+    leg_i = leg_i + 1
+  end
+  
+  return 1
+end
+
+def KUtilGetRecvPrmNum(cmd_type):
+  nRecvNum = 0
+  if cmd_type == g_key_cmd_type_path:
+    nRecvNum = 2
+  elif cmd_type == g_key_cmd_type_leg_set:
+    nRecvNum = 1 + g_key_leg_num_set
+  elif cmd_type == g_key_cmd_type_leg_detected:
+    nRecvNum = 1 + g_key_leg_num
+  elif cmd_type == g_key_cmd_type_waypoint:
+    nRecvNum = 7
+  end
+  return nRecvNum
+end
+
+def KeySendString(str):
+# Send a string.
+  varmsg("Camera", Camera)
+  socket_send_string(str, Camera)           # Set Event and Wait; Acquisition Command
+  socket_send_byte(13, Camera)              # Carriage Return 0Dhex 13dec
+  socket_send_byte(10, Camera)              # Line Feed 0Ahex 10dec
+end
+
+def KeyRecvString():
+# Receive a string.
+  varmsg("Camera", Camera)
+  str = socket_read_string(Camera, suffix="\r", interpret_escape=True, timeout=0)
+  return str
+end
+
+def KeyRecvResultNum():
+  varmsg("Camera", Camera)
+  local num = 2
+  local recvd_list = socket_read_ascii_float(num, Camera, 0)
+  socket_read_string(Camera, suffix="\r", interpret_escape=True, timeout=0)
+  local i = 0
+  while i < (num+1):
+    g_recvd_list[i] = recvd_list[i]
+    i = i + 1
+  end
+  if g_recvd_list[0] != num:
+    return -1
+  else:
+    return g_recvd_list[1]
+  end
+end
+
+def KUtilRecvResultParam(num):
+# Receive value array.
+  varmsg("Camera", Camera)
+  local recvd_list = socket_read_ascii_float(num, Camera, 0)
+  socket_read_string(Camera, suffix="\r", interpret_escape=True, timeout=0)
+  local i = 0
+  while i < (num+1):
+    g_recvd_list[i] = recvd_list[i]
+    i = i + 1
+  end
+  varmsg("g_recvd_list", g_recvd_list)
+  if g_recvd_list[0] != num:
+    return -1
+  elif g_recvd_list[1] == 0:                # 0 is OK, the other has error.
+    return 1                    # OK
+  else:
+    return 0                    # NG
+  end
+end
+

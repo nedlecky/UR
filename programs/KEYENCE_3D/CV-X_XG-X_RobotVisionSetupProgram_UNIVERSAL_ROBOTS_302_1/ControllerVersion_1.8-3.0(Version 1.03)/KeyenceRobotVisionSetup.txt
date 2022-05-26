@@ -1,0 +1,13 @@
+ Program
+   BeforeStart
+     CUR_SetUpCamera("Cam1", "192.168.0.10", 8500)
+     If CUR_InitComm("Cam1")==False
+       Popup
+   Robot Program
+     Loop
+       triggerResult≔CUR_ProcCommand("Cam1")
+       If triggerResult==1
+         'Popup'
+     CUR_CloseComm("Cam1")
+     Halt
+   Script: Setup.script
